@@ -112,7 +112,7 @@ function showMainMovies(pop, top, trend){
         };
 
         movieElTop.addEventListener("click", () => {
-            if(movieTop.media_type === "tv"){
+            if(typeof movieTop.title === "undefined"){
                 openModal(movieTop.id, tvInfo)
             }
             else{
@@ -204,7 +204,6 @@ async function openModal(id , movie_or_tv){
         
         }
     };
-
     const resp = await fetch(movie_or_tv + id + API_KEY + "&language=uk", {
         headers: {
             "Content-Type": "application/json",
