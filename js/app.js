@@ -9,14 +9,17 @@ const movieInfo = "https://api.themoviedb.org/3/movie/";
 const tvInfo = "https://api.themoviedb.org/3/tv/";
 const popularTv= "https://api.themoviedb.org/3/tv/popular?api_key=8560de707b2b84c834c2ee8ac9368365&language=uk&page=1"
 const hdrezka = "https://rezka.ag/search/?do=search&subaction=search&q=";
+const backgroundUrl = "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces";
 
 const buttonElement = document.querySelector(".header_content-search");
 const inputElement = document.querySelector(".header_content-input");
 const moviesSearcheble = document.querySelector(".movies_searcheble");
 
 document.querySelector(".main_text-popular").classList.add("text-show");
+document.querySelector(".main_text-top").classList.add("text-show");
 fetchMainMovies(popularMovies, topRated, popularTv);
 
+//ОТРИМАННЯ ДАННИХ ПРО ФІЛЬМ
 async function fetchMainMovies(pop, top, trend){
     const fetchPop = await fetch(pop, {
         headers:{
@@ -46,6 +49,7 @@ async function fetchMainMovies(pop, top, trend){
     showMainMovies(fetchPopData, testfetch1, fetchTrendData)
 }
 
+//ПОКАЗ ФІЛЬМІВ НА ГОЛОВНІЙ СТОРІНЦІ
 function showMainMovies(pop, top, trend){
     const moviesElPop = document.querySelector(".movies_popular");
     const moviesElTop = document.querySelector(".movies_top");
@@ -53,6 +57,11 @@ function showMainMovies(pop, top, trend){
     document.querySelector(".movies_popular").innerHTML = "";
     document.querySelector(".movies_top").innerHTML = "";
 
+    const btsScroll = document.querySelector(".btn-scroll");
+        btsScroll.onclick = function(){
+            console.log(moviesElPop.scrollLeft)
+            moviesElPop.scrollBy(533,0);
+    }
 
     pop.results.forEach(movie => {
         const movieElPop = document.createElement("div");
@@ -125,16 +134,29 @@ function showMainMovies(pop, top, trend){
 
 }
 
-buttonElement.onclick = function buttonOnClick(event){
-    event.preventDefault();
+const form = document.querySelector("form");
+const inpt = document.querySelector(".header_content-input");
+
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    if (inputElement.value) {
+      buttonOnClick();
+      inputElement.value = "";
+    }
+  });
+
+function buttonOnClick(event){
+    closeModal();
     document.querySelector(".main_text-popular").classList.remove("text-show");
+    document.querySelector(".main_text-top").classList.remove("text-show");
     document.querySelector(".movies_popular").innerHTML = "";
     document.querySelector(".movies_top").innerHTML = "";
 
     const new_searchURL = searchUrl + "&query=" + inputElement.value;
 
     getSearchebleMovies(new_searchURL);
-
+    
     async function getSearchebleMovies(data){
         const resp = await fetch(new_searchURL, {
             headers: {
@@ -145,10 +167,14 @@ buttonElement.onclick = function buttonOnClick(event){
         showSearchebleMovies(respData);
     }
 }
-
+//ПОКАЗ ФІЛЬМІВ В ПОШУКУ
 function showSearchebleMovies(data){
     const moviesEl = document.querySelector(".movies_searcheble");
-
+    
+    document.querySelector(".main_text-results").classList.add("text-show");
+    document.querySelector(".movies_searcheble").classList.add("text-show");
+    document.querySelector(".movies_popular").classList.remove("text-show");
+    document.querySelector(".movies_top").classList.add("text-show");
     document.querySelector(".movies_searcheble").innerHTML = "";
 
 
@@ -212,8 +238,10 @@ async function openModal(id , movie_or_tv){
     const respData = await resp.json();
 
     modalEl.classList.add("modal-show");
+    modalEl.style.setProperty("--background_poster", `url(${backgroundUrl +respData.backdrop_path})`);
 
     modalEl.innerHTML = `
+    <div class="modalbg">
     <div class="modal_card">
         <div class="modal_movie-posters">
             <img src="${imageUrl}${respData.poster_path}" alt="" class="modal_movie-poster">
@@ -231,7 +259,9 @@ async function openModal(id , movie_or_tv){
 
         <button type="button" class="modal_button-close">Закрити</button>
     </div>
+    </div>
     `
+    document.querySelector(".modalbg").style.setProperty("--background_poster", `url(${backgroundUrl +respData.backdrop_path})`);
     const btnClose = document.querySelector(".modal_button-close");
     btnClose.addEventListener("click", () => closeModal());
 };

@@ -1,8 +1,92 @@
-body {
-    font-family: "Open Sans", sans-serif;
+@font-face {
+    font-family: "e-Ukraine";
+    src: url(/fonts/e-Ukraine-Regular.otf);
 }
+
+@font-face {
+    font-family: "e-UkraineHead";
+    src: url(/fonts/e-UkraineHead-LOGO.otf);
+}
+
+body {
+    font-family: "e-Ukraine", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.header_content{
+    height: 110px;
+    background: #B8C0FF;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: space-between;
+    padding: 0 50px 0 25px;
+    gap: 30px;
+}
+
+.header_content-logo{
+    font-family: "e-UkraineHead";
+    font-size: 28px;
+    text-decoration: none;
+    color: black;
+}
+
+.input_all{
+    text-align: left;
+    width: 200px;
+    height: 34px;
+    position: relative;
+    text-align: center;
+}
+
+.input_all span{
+    position: absolute;
+    left: 12px;
+    top: 8px;
+    transition: 0.5s;
+}
+
+.input_all form:valid ~ span{
+    transform: translateX(200px);
+}
+
+span:hover{
+    filter: invert(41%) sepia(5%) saturate(86%) hue-rotate(71deg) brightness(96%) contrast(84%);
+    cursor: pointer;
+}
+
+.header_content-input{
+    width: 100%;
+    height: 34px;
+    display: flex;
+    background: #F2F2F2;
+    box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
+    border-radius: 13px;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    text-indent: 32px;
+    transition: 0.5s;
+}
+
+.header_content-input:valid{
+    text-indent: 10px;
+}
+
 .main_text-popular{
     display: none;
+    font-size: 20px;
+}
+
+.main_text-top{
+    display: none;
+    font-size: 20px;
+}
+
+.main_text-results{
+    display: none;
+    font-size: 20px;
 }
 
 .text-show{
@@ -22,6 +106,9 @@ body {
     border-radius: 10px;
 }
 
+.main_movies{
+    margin: 0 35px 0 35px;
+}
 
 .movies_popular{
     display: flex;
@@ -29,6 +116,10 @@ body {
     width: 100%;
     position: relative;
     border-radius: 10px;
+    z-index: 1;
+    background: #BBD0FF;
+    box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
+    margin-bottom: 30px;
 }
 
 .movies_top{
@@ -37,6 +128,9 @@ body {
     width: 100%;
     position: relative;
     border-radius: 10px;
+    z-index: 2;
+    background-color: #BBD0FF;
+    box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
 }
 
 .movies_searcheble{
@@ -45,6 +139,8 @@ body {
     width: 100%;
     position: relative;
     border-radius: 10px;
+    background-color: #BBD0FF;
+    box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
 }
 
 
@@ -56,13 +152,53 @@ body {
 }
 
 
-
 /*MODAL*/
+.modalbg{
+    background-image: var(--background_poster);
+    background-position: left calc((50vw - 170px) - 340px) top;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    display: flex;
+}
+
 .modal{
     display: none;
+
 }
+
+.custom_bg{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.modal_card{
+    background-image: linear-gradient(to right, rgb(77, 78, 80, 1) calc((50vw - 170px) - 340px), rgba(77, 78, 80, 0.84) 30%, rgba(77, 78, 80, 0.84) 100%);
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 40px;
+    padding-right: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal_movie{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: center;
+    box-sizing: border-box;
+    padding-left: 40px;
+}
+
 .modal-show {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.modal_movie-poster{
+    width: 300px;
+    height: 450px;
 }

@@ -15,21 +15,37 @@
     <header class="header">
         <div class="header_content">
             <a href="/index.html" class="header_content-logo">fantq</a>
-            <input type="text" class="header_content-input" placeholder="Назва"/>
-            <button type="submit" class="header_content-search">Пошук</button>
+            <div class="input_all">
+                    <form>
+                        <input type="text" class="header_content-input" placeholder="Пошук" required="required"/>
+                    </form>
+                <span class="span">
+                    <img src="/images/search.svg" alt="error" class="input-icon" onclick="buttonOnClick()">
+                </span>
+            </div>
         </div>
     </header>
 
     <section class="main_content">
+        <div class="main_start">
+            <div class="main_image_conteiner">
+                <div class="main_images"></div>
+            </div>
+        </div>
         <div class="main_movies">
-            <p class="main_text-popular">Популярні фільми</p>
+            <p class="main_text-results">Результат:</p>
             <div class="movies_searcheble scroller"></div>
+            <p class="main_text-popular">Популярні фільми</p>
             <div class="movies_popular scroller"></div>
+            <button class="btn-scroll">XUI</button>
+            <p class="main_text-top">Популярні фільми і серіали</p>
             <div class="movies_top scroller"></div>
         </div>
     </section>
 
-    <div class="modal"></div>
+    <div class="custom_bg">
+        <div class="modal"></div>
+    </div>
 
     <script src="./js/app.js"></script>
 </body>
