@@ -1,11 +1,11 @@
 @font-face {
     font-family: "e-Ukraine";
-    src: url(/fonts/e-Ukraine-Regular.otf);
+    src: url(../fonts/e-Ukraine-Regular.otf);
 }
 
 @font-face {
     font-family: "e-UkraineHead";
-    src: url(/fonts/e-UkraineHead-LOGO.otf);
+    src: url(../fonts/e-UkraineHead-LOGO.otf);
 }
 
 body {
@@ -47,11 +47,11 @@ body {
     transition: 0.5s;
 }
 
-.input_all form:valid ~ span{
+.input_all form:valid ~ .span{
     transform: translateX(200px);
 }
 
-span:hover{
+.span:hover{
     filter: invert(41%) sepia(5%) saturate(86%) hue-rotate(71deg) brightness(96%) contrast(84%);
     cursor: pointer;
 }

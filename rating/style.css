@@ -1,0 +1,32 @@
+.films{
+    width: 200px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.ratingg{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.noneDisplay{
+    display: none;
+}
+
+.yesDisplay{
+    display: flex;
+}
+
+.rate_delete{
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: rgb(128,128,128,.6);
+    width: 20px;
+    border-radius: 50px;
+}
+
+.rate_delete:hover{
+    background: rgb(128,128,128,.4);
+}

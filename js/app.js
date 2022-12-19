@@ -1,5 +1,6 @@
 const API_KEY = "?api_key=8560de707b2b84c834c2ee8ac9368365";
 
+const ratingUrl = 'https://6387e991d94a7e50408faf43.mockapi.io/api/v1/id_movie';
 const searchUrl = "https://api.themoviedb.org/3/search/multi?api_key=8560de707b2b84c834c2ee8ac9368365&language=uk";
 const imageUrl = "https://image.tmdb.org/t/p/w500"; 
 const popularMovies = "https://api.themoviedb.org/3/movie/popular?api_key=8560de707b2b84c834c2ee8ac9368365&language=uk&page=1";
@@ -59,8 +60,8 @@ function showMainMovies(pop, top, trend){
 
     const btsScroll = document.querySelector(".btn-scroll");
         btsScroll.onclick = function(){
-            console.log(moviesElPop.scrollLeft)
-            moviesElPop.scrollBy(533,0);
+            console.log(moviesElPop.clientWidth)
+            moviesElPop.scrollBy(moviesElPop.clientWidth - 180,0);
     }
 
     pop.results.forEach(movie => {
@@ -254,7 +255,12 @@ async function openModal(id , movie_or_tv){
                 <div class="loader"></div>
                 <li class="info-genre"><span> ${respData.genres.map((el) => `${el.name}`)} </span></li>
                 <li class="info-desc">${respData.overview}</li>
+                <li class="info-rate">${respData.vote_average}</li>
             </ul>
+            <form>
+                <input type="text" class="input_rating">
+            </form>
+            <button class="send_rating-button" placeholder="Оцінка">Оцінити</button>
         </div>
 
         <button type="button" class="modal_button-close">Закрити</button>
@@ -264,6 +270,29 @@ async function openModal(id , movie_or_tv){
     document.querySelector(".modalbg").style.setProperty("--background_poster", `url(${backgroundUrl +respData.backdrop_path})`);
     const btnClose = document.querySelector(".modal_button-close");
     btnClose.addEventListener("click", () => closeModal());
+
+    const sendRatingButton = document.querySelector('.send_rating-button');
+    sendRatingButton.addEventListener('submit', (e) =>{
+        e.preventDefault();
+        ratingPOST()
+    })
+    sendRatingButton.onclick = function ratingPOST(){
+        const input_rating = document.querySelector(".input_rating")
+        const data = {id_movie: mov_or_tv_name() ,rating: input_rating.value,img: imageUrl + respData.poster_path}
+        input_rating.value = "";
+
+        post();
+        async function post(){
+            const rating = await fetch(ratingUrl, {
+                method: "POST",
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            const response = await rating.json()
+        }
+    }
 };
 
 function closeModal() {
