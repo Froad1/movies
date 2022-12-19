@@ -1,11 +1,11 @@
 @font-face {
     font-family: "e-Ukraine";
-    src: url(/fonts/e-Ukraine-Regular.otf);
+    src: url(../fonts/e-Ukraine-Regular.otf);
 }
 
 @font-face {
     font-family: "e-UkraineHead";
-    src: url(/fonts/e-UkraineHead-LOGO.otf);
+    src: url(../fonts/e-UkraineHead-LOGO.otf);
 }
 
 body {
