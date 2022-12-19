@@ -276,7 +276,18 @@ async function openModal(id , movie_or_tv){
         e.preventDefault();
         ratingPOST()
     })
-    sendRatingButton.onclick = function ratingPOST(){
+
+    sendRatingButton.onclick = function alertpass(){
+        let pass = prompt("Введіть пароль:")
+        if(pass == 1233){
+            ratingPOST()
+        }
+        else{
+            alert("Ви ввели невірний пароль!")
+        }
+    }
+
+    function ratingPOST(){
         const input_rating = document.querySelector(".input_rating")
         const data = {id_movie: mov_or_tv_name() ,rating: input_rating.value,img: imageUrl + respData.poster_path}
         input_rating.value = "";

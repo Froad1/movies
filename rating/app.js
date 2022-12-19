@@ -8,25 +8,33 @@ async function get(){
         }
     })
     const response = await getList.json()
-    console.log(response)
     const pass = document.querySelector(".pass")
     pass.addEventListener('submit', (e) =>{
         e.preventDefault();
         passValide()
     })
     
+    if(passValide() == true){
+        console.log(true)
+    }
+    else{
+        console.log(false)
+    }
+
     const btnValide = document.querySelector(".btnvalide")
     const inputPass = document.querySelector(".pass")
-
-    btnValide.onclick = function passValide(){
+    btnValide.addEventListener('click', passValide)
+    function passValide(){
         if(pass.value === "12333"){
             show(response)
             btnValide.classList.add("noneDisplay")
             inputPass.classList.add("noneDisplay")
             document.querySelector(".delete_on").classList.remove("noneDisplay")
+            return true
         }
         else{
             console.log("Error")
+            return false
         }
     }
 }
@@ -34,7 +42,7 @@ async function get(){
 function show(data){
     const ratingh = document.querySelector('.ratingg');
     document.querySelector('.ratingg').innerHTML = "";
-
+    console.log("show")
     data.forEach(rate =>{
         const ratin = document.createElement("div");
         ratin.classList.add("films");
@@ -73,7 +81,9 @@ function getInpt(){
 }
 const rateDelete = document.querySelector(".rate_delete");
 function del(data){
-    post()
+    if(confirm("Ви впевнені що хочете видалити?")){
+        post()
+    };
     async function post(){
         const getList = await fetch(baseUrl + '/'+ data, {
             method: "DELETE",
