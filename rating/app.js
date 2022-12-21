@@ -1,18 +1,9 @@
 const baseUrl = 'https://6387e991d94a7e50408faf43.mockapi.io/api/v1/id_movie';
-get()
-async function get(){
-    setTimeout(1500)
-    const getList = await fetch(baseUrl, {
-        headers:{
-            "Content-Type": "application/json"
-        }
-    })
-    const response = await getList.json()
+
+password()
+function password(){
     const pass = document.querySelector(".pass")
-    pass.addEventListener('submit', (e) =>{
-        e.preventDefault();
-        passValide()
-    })
+    pass.addEventListener('submit', passValide)
     
     if(passValide() == true){
         console.log(true)
@@ -25,11 +16,22 @@ async function get(){
     const inputPass = document.querySelector(".pass")
     btnValide.addEventListener('click', passValide)
     function passValide(){
+        console.log("123")
         if(pass.value === "12333"){
-            show(response)
+            get()
             btnValide.classList.add("noneDisplay")
             inputPass.classList.add("noneDisplay")
-            document.querySelector(".delete_on").classList.remove("noneDisplay")
+            document.querySelector(".update").classList.remove("noneDisplay")
+            console.log("OK")
+            return true
+        }
+        else if(pass.value === "33321"){
+            let account2url = "https://6387e991d94a7e50408faf43.mockapi.io/api/v1/account2";
+            get(account2url)
+            btnValide.classList.add("noneDisplay")
+            inputPass.classList.add("noneDisplay")
+            document.querySelector(".update").classList.remove("noneDisplay")
+            console.log("OK")
             return true
         }
         else{
@@ -39,6 +41,29 @@ async function get(){
     }
 }
 
+//Отримання
+async function get(data){
+    setTimeout(1500)
+    if(data == undefined){
+        const getList = await fetch(baseUrl, {
+            headers:{
+                "Content-Type": "application/json"
+            }
+        })
+        const response = await getList.json()
+        show(response)
+    }
+    else {
+        const getList = await fetch(data, {
+            headers:{
+                "Content-Type": "application/json"
+            }
+        })
+        const response = await getList.json()
+        show(response)
+    }
+}
+//Показ
 function show(data){
     const ratingh = document.querySelector('.ratingg');
     document.querySelector('.ratingg').innerHTML = "";
@@ -49,8 +74,11 @@ function show(data){
         ratin.innerHTML = `
         <div class="film_card">
             <img src="${rate.img}" alt="Error" width="200px">
-            <p>${rate.id_movie} = ${rate.rating}/10</p>
-            <img src="close.svg" alt="Error" class="rate_delete" onclick="del(${rate.id})">
+            <p class="rate_text">${rate.id_movie} = ${rate.rating}/10
+            <span class="change_rate-span"><img src="edit.svg" alt="Error" class="change_rate" onclick="rateChangeShow(${rate.id})"></span></p>
+            <img src="close.svg" alt="Error" class="rate_delete noneDisplay" onclick="del(${rate.id})">
+            <input type="text" class="change_rate-inpt${rate.id} noneDisplay">
+            <button class="change_rate-butt${rate.id} noneDisplay" onclick="rateChange(${rate.id})">Змінити</button>
         </div>
         `
 
@@ -92,7 +120,27 @@ function del(data){
     }
 }
 
-function showDelete(){
-    console.log("OK")
-    document.querySelector(".rate_delete").classList.add("noneDisplay")
+function rateChangeShow(data){
+    document.querySelector(".change_rate-inpt" + data).classList.remove("noneDisplay")
+    document.querySelector(".change_rate-butt" + data).classList.remove("noneDisplay")
+}
+
+function rateChange(data){
+    const changeInput = document.querySelector(".change_rate-inpt" + data)
+    const data1 = {rating: changeInput.value}
+    put()
+    async function put(){
+        const getList = await fetch(baseUrl + "/" + data, {
+            method: "PUT",
+            headers:{
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data1)
+        })
+        get()
+    }
+}
+
+document.querySelector(".update").onclick = function updateRate(){
+    get()
 }

@@ -19,6 +19,7 @@
 }
 
 .rate_delete{
+    display: none;
     position: absolute;
     top: 0;
     right: 0;
@@ -27,6 +28,28 @@
     border-radius: 50px;
 }
 
+.film_card:hover .rate_delete{
+    display: flex;
+}
+
 .rate_delete:hover{
     background: rgb(128,128,128,.4);
+}
+
+.rate_text:hover .change_rate-span{
+    display: contents;
+}
+
+.change_rate-span{
+    display: none;
+}
+
+.change_rate{
+    margin-left: 5px;
+    position: absolute;
+    width: 18px;
+}
+
+.change_rate:hover{
+    filter: invert(41%) sepia(5%) saturate(86%) hue-rotate(71deg) brightness(96%) contrast(84%);
 }

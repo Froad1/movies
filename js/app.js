@@ -239,10 +239,9 @@ async function openModal(id , movie_or_tv){
     const respData = await resp.json();
 
     modalEl.classList.add("modal-show");
-    modalEl.style.setProperty("--background_poster", `url(${backgroundUrl +respData.backdrop_path})`);
+    document.querySelector(".modal").style.setProperty("--background_poster", `url(${backgroundUrl +respData.backdrop_path})`);
 
     modalEl.innerHTML = `
-    <div class="modalbg">
     <div class="modal_card">
         <div class="modal_movie-posters">
             <img src="${imageUrl}${respData.poster_path}" alt="" class="modal_movie-poster">
@@ -262,14 +261,13 @@ async function openModal(id , movie_or_tv){
             </form>
             <button class="send_rating-button" placeholder="Оцінка">Оцінити</button>
         </div>
-
         <button type="button" class="modal_button-close">Закрити</button>
     </div>
-    </div>
     `
-    document.querySelector(".modalbg").style.setProperty("--background_poster", `url(${backgroundUrl +respData.backdrop_path})`);
     const btnClose = document.querySelector(".modal_button-close");
     btnClose.addEventListener("click", () => closeModal());
+
+    console.log(backgroundUrl +respData.backdrop_path)
 
     const sendRatingButton = document.querySelector('.send_rating-button');
     sendRatingButton.addEventListener('submit', (e) =>{
@@ -304,6 +302,23 @@ async function openModal(id , movie_or_tv){
             const response = await rating.json()
         }
     }
+
+    //COLOR_PICKER
+
+    const colorThief = new ColorThief();
+    const img = new Image();
+    
+    img.addEventListener('load', function() {
+        console.log(colorThief.getColor(img))
+      var clr = colorThief.getColor(img)
+      document.querySelector(".modal_card").style.setProperty("--test_color", `${clr}`);
+    });
+    
+    let imageURL = backgroundUrl +respData.backdrop_path;
+    let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
+    
+    img.crossOrigin = 'Anonymous';
+    img.src = googleProxyURL + encodeURIComponent(imageURL);
 };
 
 function closeModal() {

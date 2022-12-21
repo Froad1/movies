@@ -153,18 +153,11 @@ body {
 
 
 /*MODAL*/
-.modalbg{
-    background-image: var(--background_poster);
-    background-position: left calc((50vw - 170px) - 340px) top;
-    background-size: cover;
-    background-repeat: no-repeat;
-    width: 100%;
-    display: flex;
-}
-
 .modal{
     display: none;
-
+    background-image: var(--background_poster);
+    height: 100%;
+    overflow: inherit;
 }
 
 .custom_bg{
@@ -174,13 +167,14 @@ body {
 }
 
 .modal_card{
-    background-image: linear-gradient(to right, rgb(77, 78, 80, 1) calc((50vw - 170px) - 340px), rgba(77, 78, 80, 0.84) 30%, rgba(77, 78, 80, 0.84) 100%);
+    background-image: linear-gradient(to right, rgb(var(--test_color), 1) calc((50vw - 170px) - 340px), rgba(var(--test_color), 0.84) 30%, rgba(var(--test_color), 0.84) 100%);
     padding-top: 30px;
     padding-bottom: 30px;
     padding-left: 40px;
     padding-right: 40px;
     display: flex;
     flex-direction: column;
+    z-index: 100;
 }
 
 .modal_movie{
@@ -198,7 +192,12 @@ body {
     align-items: center;
 }
 
+.modal_movie-posters{
+    width: 300px;
+    height: 450px;
+}
 .modal_movie-poster{
     width: 300px;
     height: 450px;
 }
+
