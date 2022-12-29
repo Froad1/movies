@@ -8,6 +8,20 @@
     src: url(../fonts/e-UkraineHead-LOGO.otf);
 }
 
+:root {
+    --light: 80;
+    /* Пороговое значение, отделяющее "светлые" цвета, от "темных". Рекомендуется 50 - 70 */
+    --threshold: 60;
+}
+
+.show{
+    display: flex;
+}
+
+.noshow{
+    display: none;
+}
+
 body {
     font-family: "e-Ukraine", sans-serif;
     margin: 0;
@@ -99,6 +113,13 @@ body {
     border-radius: 10px;
 }
 
+.tv{
+    min-width: 160px;
+    margin: 10px;
+    position: relative;
+    border-radius: 10px;
+}
+
 
 .movie_poster{
     width: 100%;
@@ -121,7 +142,9 @@ body {
     box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
     margin-bottom: 30px;
 }
-
+.show{
+    display: flex;
+}
 .movies_top{
     display: flex;
     flex-wrap: nowrap;
@@ -131,6 +154,19 @@ body {
     z-index: 2;
     background-color: #BBD0FF;
     box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
+    margin-bottom: 30px;
+}
+
+.movies_trend{
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    position: relative;
+    border-radius: 10px;
+    z-index: 1;
+    background: #BBD0FF;
+    box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
+    margin-bottom: 30px;
 }
 
 .movies_searcheble{
@@ -143,7 +179,6 @@ body {
     box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
 }
 
-
 /*SCROLLER*/
 .scroller{
     overflow: auto;
@@ -151,53 +186,154 @@ body {
     width: 100%;
 }
 
+.scroll-forward{
+    position: absolute;
+    right: 39px;
+    width: 100px;
+    height: 349px;
+    display: flex;
+    align-items: center;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.btn-scroll{
+    right: 0;
+    position: absolute;
+    align-items: center;
+    z-index: 2;
+    fill: none;
+    pointer-events: auto;
+}
+.scroll-forward:hover .btn-scroll{
+    fill: white;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 100px;
+}
+
 
 /*MODAL*/
 .modal{
     display: none;
-    background-image: var(--background_poster);
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
     height: 100%;
-    overflow: inherit;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
-.custom_bg{
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+.modal_background-posters{
+    background-image: linear-gradient(to right, rgba(var(--test_color), 1) calc((50vw - 170px) - 340px), rgba(var(--test_color), 0.84) 30%, rgba(var(--test_color), 0.84) 100%), var(--background_poster);
+    background-size: cover;
+    border: 0;
+    position: absolute;
+    height: 400px;
+    width: 750px;
+    padding: 0;
+    border-radius: 20px;
+    z-index: 101;
 }
 
 .modal_card{
-    background-image: linear-gradient(to right, rgb(var(--test_color), 1) calc((50vw - 170px) - 340px), rgba(var(--test_color), 0.84) 30%, rgba(var(--test_color), 0.84) 100%);
-    padding-top: 30px;
-    padding-bottom: 30px;
-    padding-left: 40px;
-    padding-right: 40px;
+    background: rgba(184, 192, 255);
+    height: auto;
+    border-radius: 20px;
+    max-width: 750px;
+    display: block;
+    position: relative;
+    z-index: 102;
+}
+
+.modal_header{
+    position: relative;
+    height: auto;
     display: flex;
-    flex-direction: column;
-    z-index: 100;
+    z-index: 102;
+    border-radius: 20px;
+    max-width: 750px;
 }
 
 .modal_movie{
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
     align-content: center;
     box-sizing: border-box;
+    padding: 16px;
     padding-left: 40px;
+    z-index: 103;
 }
 
 .modal-show {
     display: flex;
     justify-content: center;
-    align-items: center;
 }
 
 .modal_movie-posters{
-    width: 300px;
-    height: 450px;
+    width: 200px;
+    height: 300px;
+    z-index: 102;
+    padding: 16px;
 }
 .modal_movie-poster{
-    width: 300px;
-    height: 450px;
+    width: 200px;
+    height: 300px;
+    border-radius: 15px;
 }
 
+.modal-text{
+    --switch: calc((var(--light) - var(--threshold)) * -100%);
+    color: hsl(0, 0%, var(--switch));
+}
+
+.movie-title{
+  font-family: "e-UkraineHead", bold;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.modal_movie-title{
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.movie-genres{
+    margin-left: 30px;
+    margin-top: 0;
+    padding-top: 0;
+    font-size: 14px;
+}
+
+.movie-desc{
+    margin-top: 30px;
+    font-size: 18px;
+    margin-bottom: 0;
+}
+
+.info-desc{
+    font-size: 14px;
+}
+.modal_trailer{
+    margin-top: 10px;
+    position: relative;
+    z-index: 106;
+    margin-left: 16px;
+    height: 404px;
+}
+
+.modal_frame_trailer{
+    height: 404px;
+    width: 716px;
+    border-radius: 20px;
+}
+
+.modal_button-close{
+    width: 30px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+.modal_button-close:hover{
+    filter: invert(41%) sepia(5%) saturate(86%) hue-rotate(71deg) brightness(96%) contrast(84%);
+}

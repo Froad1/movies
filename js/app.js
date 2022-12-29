@@ -58,12 +58,6 @@ function showMainMovies(pop, top, trend){
     document.querySelector(".movies_popular").innerHTML = "";
     document.querySelector(".movies_top").innerHTML = "";
 
-    const btsScroll = document.querySelector(".btn-scroll");
-        btsScroll.onclick = function(){
-            console.log(moviesElPop.clientWidth)
-            moviesElPop.scrollBy(moviesElPop.clientWidth - 180,0);
-    }
-
     pop.results.forEach(movie => {
         const movieElPop = document.createElement("div");
         movieElPop.classList.add("movie");
@@ -86,7 +80,7 @@ function showMainMovies(pop, top, trend){
                 return `${movie.title}`
             }
         };
-
+        
         movieElPop.addEventListener("click", () => {
             if(movie.media_type === "tv"){
                 openModal(movie.id, tvInfo)
@@ -98,6 +92,15 @@ function showMainMovies(pop, top, trend){
         moviesElPop.appendChild(movieElPop);
 
     });
+
+    const btsScroll = document.querySelector(".btn-scroll");
+    btsScroll.addEventListener('click', () => {
+        if(moviesElPop.scrollLeft == "2911"){
+            btsScroll.classList.add("noshow")
+        }
+        const movieWidth = moviesElPop.clientWidth;
+        moviesElPop.scrollBy(movieWidth - 0,0);
+    })
 
     top.forEach(movieTop => {
         const movieElTop = document.createElement("div");
@@ -222,15 +225,16 @@ function showSearchebleMovies(data){
 const modalEl = document.querySelector(".modal");
 
 async function openModal(id , movie_or_tv){
-    function mov_or_tv_name(){
-        if(typeof respData.title === "undefined"){
-            return `${respData.name}`
+
+    function releaseDate(){
+        if(typeof respData.release_date === "undefined"){
+            return `${respData.first_air_date.substr(0, 4)}`
         }
         else{
-            return `${respData.title}`
+            return `${respData.release_date.substr(0, 4)}`
         
         }
-    };
+    }
     const resp = await fetch(movie_or_tv + id + API_KEY + "&language=uk", {
         headers: {
             "Content-Type": "application/json",
@@ -238,36 +242,67 @@ async function openModal(id , movie_or_tv){
     });
     const respData = await resp.json();
 
+    if(typeof respData.title === "undefined"){
+        var mov_or_tv_name = `${respData.name}`
+    }
+    else{
+        var mov_or_tv_name = `${respData.title}`
+    
+    }
+   async function showTrailer() {
+        // Отримуємо API ключ із YouTube Data API
+        const API_KEY = "AIzaSyCVskJkWmkLlzopprIxgB_b4Ly4i-E0axg";
+      
+        // Створюємо запит до YouTube Data API з використанням методу search
+        const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=id&type=video&q=${mov_or_tv_name} trailer&key=${API_KEY}`);
+        const data = await response.json();
+      
+        // Отримуємо URL відео із результатів
+        const videoId = data.items[0].id.videoId;
+        const videoUrl = `https://www.youtube.com/embed/${videoId}`;
+        return videoUrl
+    }
+    const trailer = await showTrailer();
     modalEl.classList.add("modal-show");
-    document.querySelector(".modal").style.setProperty("--background_poster", `url(${backgroundUrl +respData.backdrop_path})`);
 
     modalEl.innerHTML = `
     <div class="modal_card">
-        <div class="modal_movie-posters">
-            <img src="${imageUrl}${respData.poster_path}" alt="" class="modal_movie-poster">
+        <div class="modal_header">
+            <div class="modal_movie-posters">
+                <img src="${imageUrl}${respData.poster_path}" alt="" class="modal_movie-poster">
+            </div>
+            <div class="modal_background-posters"></div>
+            <div class="modal_movie">
+                <div class="modal-text">
+                    <h2 class="modal_movie-title">
+                        <span class="movie-title">${mov_or_tv_name}</span>
+                        <span class="movie-year">(${releaseDate()})</span>
+                    </h2>
+                    <p class="movie-genres">${respData.genres.map((el) => `${el.name}`)}</p>
+                    <p class="movie-desc">Опис</p>
+                    <p class="info-desc">${respData.overview}</p>
+                    <ul class="modal_movie-info">
+                        <li class="info-rate">${respData.vote_average}</li>
+                    </ul>
+                    <form>
+                        <input type="text" class="input_rating">
+                    </form>
+                    <button class="send_rating-button" placeholder="Оцінка">Оцінити</button>
+                    <img src="./images/close.svg" class="modal_button-close"/>
+                </div>
+            </div>
+            
         </div>
-        <div class="modal_movie">
-            <h2>
-                <span class="movie-title">${mov_or_tv_name()}</span>
-            </h2>
-            <ul class="modal_movie-info">
-                <div class="loader"></div>
-                <li class="info-genre"><span> ${respData.genres.map((el) => `${el.name}`)} </span></li>
-                <li class="info-desc">${respData.overview}</li>
-                <li class="info-rate">${respData.vote_average}</li>
-            </ul>
-            <form>
-                <input type="text" class="input_rating">
-            </form>
-            <button class="send_rating-button" placeholder="Оцінка">Оцінити</button>
+        <div class="modal_trailer">
+            <iframe src="${trailer}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="modal_frame_trailer"></iframe>
         </div>
-        <button type="button" class="modal_button-close">Закрити</button>
     </div>
     `
+
+    document.querySelector(".modal_background-posters").style.setProperty("--background_poster", `url(${backgroundUrl +respData.backdrop_path})`);
+
     const btnClose = document.querySelector(".modal_button-close");
     btnClose.addEventListener("click", () => closeModal());
-
-    console.log(backgroundUrl +respData.backdrop_path)
 
     const sendRatingButton = document.querySelector('.send_rating-button');
     sendRatingButton.addEventListener('submit', (e) =>{
@@ -287,7 +322,7 @@ async function openModal(id , movie_or_tv){
 
     function ratingPOST(){
         const input_rating = document.querySelector(".input_rating")
-        const data = {id_movie: mov_or_tv_name() ,rating: input_rating.value,img: imageUrl + respData.poster_path}
+        const data = {id_movie: mov_or_tv_name ,rating: input_rating.value,img: imageUrl + respData.poster_path}
         input_rating.value = "";
 
         post();
@@ -303,26 +338,72 @@ async function openModal(id , movie_or_tv){
         }
     }
 
+    if(respData.vote_average <= 6){
+        document.querySelector(".info-rate").style.color = 'red'
+    }
+    else if(respData.vote_average > 6 && respData.vote_average < 7.5){
+        document.querySelector(".info-rate").style.color = 'yellow'
+    }
+    else{
+        document.querySelector(".info-rate").style.color = 'green'
+    }
+
     //COLOR_PICKER
 
     const colorThief = new ColorThief();
     const img = new Image();
     
-    img.addEventListener('load', function() {
-        console.log(colorThief.getColor(img))
+    img.addEventListener('load', function() {   
       var clr = colorThief.getColor(img)
-      document.querySelector(".modal_card").style.setProperty("--test_color", `${clr}`);
+      RGBToHSL(...clr)
+      document.querySelector(".modal_background-posters").style.setProperty("--test_color", `${clr}`);
     });
-    
     let imageURL = backgroundUrl +respData.backdrop_path;
     let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
     
     img.crossOrigin = 'Anonymous';
     img.src = googleProxyURL + encodeURIComponent(imageURL);
+
+
+    //RGB TO HSL
+    function RGBToHSL(r,g,b) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+        let cmin = Math.min(r,g,b),
+            cmax = Math.max(r,g,b),
+            delta = cmax - cmin,
+            h = 0,
+            s = 0,
+            l = 0;
+        if (delta == 0)
+        h = 0;
+        else if (cmax == r)
+        h = ((g - b) / delta) % 6;
+        else if (cmax == g)
+        h = (b - r) / delta + 2;
+        else
+        h = (r - g) / delta + 4;
+
+        h = Math.round(h * 60);
+        
+        if (h < 0)
+            h += 360;
+        l = (cmax + cmin) / 2;
+
+            s = delta == 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+                
+            s = +(s * 100).toFixed(1);
+            l = +(l * 100).toFixed(1);
+
+            document.documentElement.style.setProperty("--light", l)
+            console.log( "hsl(" + h + "," + s + "%," + l + "%)");    
+      }
 };
 
 function closeModal() {
     modalEl.classList.remove("modal-show");
+    modalEl.innerHTML = "";
   }
   
 window.addEventListener("click", (e) => {
@@ -336,3 +417,4 @@ window.addEventListener("keydown", (e) => {
       closeModal();
     }
   })
+  
