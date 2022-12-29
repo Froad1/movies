@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/style.css">
+    <!--шрифти: -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"/>
+    <title>fantq movies</title>
+</head>
+<body>
+    
+    <header class="header">
+        <div class="header_content">
+            <a href="/index.html" class="header_content-logo">fantq</a>
+            <a href="./rating/index.html">rating</a>
+            <div class="input_all">
+                    <form>
+                        <input type="text" class="header_content-input" placeholder="Пошук" required="required"/>
+                    </form>
+                <span class="span">
+                    <img src="search.svg" alt="error" class="input-icon header_content-search">
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <section class="main_content">
+        <div class="main_movies">
+            <p class="main_text-results">Результат:</p>
+            <div class="movies_searcheble scroller"></div>
+            <p class="main_text-popular">Популярні фільми</p>
+            <div class="movies_popular scroller"></div>
+            <button class="btn-scroll">XUI</button>
+            <p class="main_text-top">Популярні фільми і серіали</p>
+            <div class="movies_top scroller"></div>
+            <div class="movies_trend scroller"></div>
+        </div>
+    </section>
+
+    <div class="modal"></div>
+    <div class="overlay"></div>
+    <div class="movie_info"></div>
+    <div class="tv_info"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+    <script src="https://cdn.rawgit.com/briangonzalez/rgbaster.js/b2fb235b/rgbaster.min.js"></script>
+    <script src="./js/app2.js"></script>
+</body>
+</html>
+
