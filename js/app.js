@@ -251,10 +251,10 @@ async function openModal(id , movie_or_tv){
     }
    async function showTrailer() {
         // Отримуємо API ключ із YouTube Data API
-        const API_KEY = "AIzaSyCVskJkWmkLlzopprIxgB_b4Ly4i-E0axg";
+        const API_KEY_YOUTUBE = "AIzaSyCVskJkWmkLlzopprIxgB_b4Ly4i-E0axg";
       
         // Створюємо запит до YouTube Data API з використанням методу search
-        const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=id&type=video&q=${mov_or_tv_name} trailer&key=${API_KEY}`);
+        const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=id&type=video&q=${mov_or_tv_name}${releaseDate()} trailer&key=${API_KEY_YOUTUBE}`);
         const data = await response.json();
       
         // Отримуємо URL відео із результатів
@@ -279,11 +279,10 @@ async function openModal(id , movie_or_tv){
                         <span class="movie-year">(${releaseDate()})</span>
                     </h2>
                     <p class="movie-genres">${respData.genres.map((el) => `${el.name}`)}</p>
-                    <p class="movie-desc">Опис</p>
-                    <p class="info-desc">${respData.overview}</p>
-                    <ul class="modal_movie-info">
-                        <li class="info-rate">${respData.vote_average}</li>
-                    </ul>
+                    ${respData.overview ? `<p class="movie-desc">Опис</p>
+                    <p class="info-desc">${respData.overview}</p>` : ''}
+                    ${respData.vote_average ? `<p class="movie-rate">Оцінка</p>
+                    <p class="info-rate">${respData.vote_average}</p>` : ''}
                     <form>
                         <input type="text" class="input_rating">
                     </form>
