@@ -42,17 +42,6 @@ function displayNextFilm(){
     });
 }
 
-fetchBasicMovies(i)
-$('.basic_poster').animate({
-    width: '0%',
-    height: '0%',
-  }, 500, function() {
-    fetchBasicMovies(i);
-    $('.basic_poster').animate({
-        width: '100%',
-        height: '100%',
-    }, 500);
-});
 async function fetchBasicMovies(i){
     if (basicFilmId[i] == 100088 || basicFilmId[i] == 119051){
         const fetchBasic = await fetch(tvInfo + basicFilmId[i] + API_KEY + "&language=uk", {
@@ -75,6 +64,19 @@ async function fetchBasicMovies(i){
 }
 
 function showBasicMovies(data){
+
+fetchBasicMovies(i)
+$('.basic_poster').animate({
+    width: '0%',
+    height: '0%',
+  }, 500, function() {
+    fetchBasicMovies(i);
+    $('.basic_poster').animate({
+        width: '100%',
+        height: '100%',
+    }, 500);
+});
+
     const basicsEl = document.querySelector(".basic_movie");
     basicsEl.innerHTML = `
     <div class="basic-box">
