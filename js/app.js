@@ -2,7 +2,8 @@ const API_KEY = "?api_key=8560de707b2b84c834c2ee8ac9368365";
 
 const ratingUrl = 'https://6387e991d94a7e50408faf43.mockapi.io/api/v1/id_movie';
 const searchUrl = "https://api.themoviedb.org/3/search/multi?api_key=8560de707b2b84c834c2ee8ac9368365&language=uk";
-const imageUrl = "https://image.tmdb.org/t/p/w500"; 
+const imageUrl = "https://image.tmdb.org/t/p/w500";
+const imageUrlOrig = "https://image.tmdb.org/t/p/original/" 
 const popularMovies = "https://api.themoviedb.org/3/movie/popular?api_key=8560de707b2b84c834c2ee8ac9368365&language=uk&page=1";
 const topRated = "https://api.themoviedb.org/3/movie/top_rated?api_key=8560de707b2b84c834c2ee8ac9368365&language=uk"
 const trendingMovie ="https://api.themoviedb.org/3/trending/tv/week?api_key=8560de707b2b84c834c2ee8ac9368365&language=uk";
@@ -18,7 +19,107 @@ const moviesSearcheble = document.querySelector(".movies_searcheble");
 
 document.querySelector(".main_text-popular").classList.add("text-show");
 document.querySelector(".main_text-top").classList.add("text-show");
+document.querySelector(".movies_searcheble").style.display = "none";
 fetchMainMovies(popularMovies, topRated, popularTv);
+
+
+//ГОЛОВНИЙ ФІЛЬМ
+var basicFilmId = ['100088','76600','315162','119051'];
+var i = 0;
+
+var btnChangeBasicMov =  document.querySelector(".change_basic_movie");
+displayNextFilm()
+function displayNextFilm(){
+    let i = 0;
+    let intervalId = setInterval(function() {
+        i++;
+        if(i === basicFilmId.length) i=0;
+        fetchBasicMovies(i)
+    }, 10000);
+    
+    document.querySelector(".change_basic_movie").addEventListener("click", function(){
+        clearInterval(intervalId);
+    });
+}
+
+fetchBasicMovies(i)
+$('.basic_poster').animate({
+    width: '0%',
+    height: '0%',
+  }, 500, function() {
+    fetchBasicMovies(i);
+    $('.basic_poster').animate({
+        width: '100%',
+        height: '100%',
+    }, 500);
+});
+async function fetchBasicMovies(i){
+    if (basicFilmId[i] == 100088 || basicFilmId[i] == 119051){
+        const fetchBasic = await fetch(tvInfo + basicFilmId[i] + API_KEY + "&language=uk", {
+            headers:{
+                "Content-Type": "application/json"
+            }
+        })
+        const fetchBasicData = await fetchBasic.json();
+        showBasicMovies(fetchBasicData);
+    }
+    else{
+        const fetchBasic = await fetch(movieInfo + basicFilmId[i] + API_KEY + "&language=uk", {
+            headers:{
+                "Content-Type": "application/json"
+            }
+        })
+        const fetchBasicData = await fetchBasic.json();
+        showBasicMovies(fetchBasicData);
+    }
+}
+
+function showBasicMovies(data){
+    const basicsEl = document.querySelector(".basic_movie");
+    basicsEl.innerHTML = `
+    <div class="basic-box">
+        <div class="basic_poster">
+            <div class="blure-box">
+                <h1 class="basic_title">${mov_tv()}</h1>
+            </div>
+        </div>
+    </div>
+    `
+
+    function mov_tv(){
+        if(data.id == '100088' || data.id == '119051'){
+            return `${data.name}`
+        }
+        else return `${data.title}`
+    }
+    document.querySelector(".basic-box").addEventListener("click", () => {
+        if(data.id == '100088'|| data.id == '119051'){
+            openModal(data.id, tvInfo)
+        }
+        else {
+            openModal(data.id, movieInfo)
+        }
+    })
+
+    document.querySelector(".basic_poster").style.setProperty("--basicPoster", `url(${imageUrlOrig + data.backdrop_path})`);
+
+    const colorThief = new ColorThief();
+    const img = new Image();
+    
+    img.addEventListener('load', function() {   
+      var clr = colorThief.getColor(img)
+      RGBToHSL(...clr)
+      document.querySelector(".basic_poster").style.setProperty("--test_color", `${clr}`);
+      document.querySelector(".header_content").style.setProperty("--test_color", `${clr}`)
+      document.querySelector(".blure-box").style.setProperty("--test_color", `${clr}`);
+    });
+    let imageURL = imageUrlOrig + data.backdrop_path;
+    let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
+    
+    img.crossOrigin = 'Anonymous';
+    img.src = googleProxyURL + encodeURIComponent(imageURL);
+}
+
 
 //ОТРИМАННЯ ДАННИХ ПРО ФІЛЬМ
 async function fetchMainMovies(pop, top, trend){
@@ -68,7 +169,7 @@ function showMainMovies(pop, top, trend){
         <div class="movie__cover--darkened"></div>
         <div class="movie_info">
             <div class="info-title">${movie_or_tv()}</div>
-            <div class="info-genre"></div>
+            <!--  <div class="info-genre"></div> -->
         </div>
         `
 
@@ -154,9 +255,9 @@ function buttonOnClick(event){
     closeModal();
     document.querySelector(".main_text-popular").classList.remove("text-show");
     document.querySelector(".main_text-top").classList.remove("text-show");
-    document.querySelector(".movies_popular").innerHTML = "";
-    document.querySelector(".movies_top").innerHTML = "";
-
+    document.querySelector(".movies_popular").style.display = "none";
+    document.querySelector(".movies_top").style.display = "none";
+    document.querySelector(".movies_searcheble").style.display = "flex";
     const new_searchURL = searchUrl + "&query=" + inputElement.value;
 
     getSearchebleMovies(new_searchURL);
@@ -249,20 +350,22 @@ async function openModal(id , movie_or_tv){
         var mov_or_tv_name = `${respData.title}`
     
     }
-   async function showTrailer() {
-        // Отримуємо API ключ із YouTube Data API
-        const API_KEY_YOUTUBE = "AIzaSyCVskJkWmkLlzopprIxgB_b4Ly4i-E0axg";
-      
-        // Створюємо запит до YouTube Data API з використанням методу search
-        const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=id&type=video&q=${mov_or_tv_name}${releaseDate()} trailer&key=${API_KEY_YOUTUBE}`);
-        const data = await response.json();
-      
-        // Отримуємо URL відео із результатів
-        const videoId = data.items[0].id.videoId;
-        const videoUrl = `https://www.youtube.com/embed/${videoId}`;
-        return videoUrl
+
+    async function showTrailer(){
+        const trailer = await fetch(movie_or_tv + id + API_KEY + "&append_to_response=videos" + "&language=uk", {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+        const trailerData = await trailer.json();
+        if (trailerData.videos.results.length > 0){
+            return trailerData.videos.results[0].key
+        }
+        else {
+            return 
+        }
     }
-    const trailer = await showTrailer();
+    const trailerKey = await showTrailer();
     modalEl.classList.add("modal-show");
 
     modalEl.innerHTML = `
@@ -293,7 +396,7 @@ async function openModal(id , movie_or_tv){
             
         </div>
         <div class="modal_trailer">
-            <iframe src="${trailer}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="modal_frame_trailer"></iframe>
+            ${ trailerKey ? `<iframe src="${ "https://www.youtube.com/embed/" + trailerKey}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="modal_frame_trailer"></iframe>`: ''}
         </div>
     </div>
     `
@@ -363,6 +466,7 @@ async function openModal(id , movie_or_tv){
     img.crossOrigin = 'Anonymous';
     img.src = googleProxyURL + encodeURIComponent(imageURL);
 
+};
 
     //RGB TO HSL
     function RGBToHSL(r,g,b) {
@@ -395,10 +499,8 @@ async function openModal(id , movie_or_tv){
             s = +(s * 100).toFixed(1);
             l = +(l * 100).toFixed(1);
 
-            document.documentElement.style.setProperty("--light", l)
-            console.log( "hsl(" + h + "," + s + "%," + l + "%)");    
+            document.documentElement.style.setProperty("--light", l)   
       }
-};
 
 function closeModal() {
     modalEl.classList.remove("modal-show");
@@ -416,4 +518,3 @@ window.addEventListener("keydown", (e) => {
       closeModal();
     }
   })
-  

@@ -26,24 +26,31 @@ body {
     font-family: "e-Ukraine", sans-serif;
     margin: 0;
     padding: 0;
+    background: #161B33;
 }
-
-.header_content{
-    height: 110px;
-    background: #B8C0FF;
+.header{
+    width: 100%;
+    height: 60px;
     display: flex;
-    align-items: center;
-    text-align: center;
+    background: #0D0C1D;
+}
+.header_content{
+    width: 100%;
+    bottom: 10px;
+    position: relative;
+    align-items: flex-end;
+    text-align: flex-end;
     justify-content: space-between;
     padding: 0 50px 0 25px;
     gap: 30px;
+    display: flex;
 }
 
 .header_content-logo{
     font-family: "e-UkraineHead";
     font-size: 28px;
     text-decoration: none;
-    color: black;
+    color: #474973;
 }
 
 .input_all{
@@ -75,6 +82,7 @@ body {
     height: 34px;
     display: flex;
     background: #F2F2F2;
+    background: #474973;
     box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
     border-radius: 13px;
     border: none;
@@ -88,14 +96,87 @@ body {
     text-indent: 10px;
 }
 
+.film-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.film {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 1s ease-in-out;
+}
+
+.current-film {
+    z-index: 3;
+}
+
+.next-film {
+    z-index: 2;
+}
+
+.basic_poster{
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    background: linear-gradient(180deg, rgba(13, 12, 29, 1) 0%, rgba(var(--test_color), 0.65) 15%, rgba(var(--test_color), 0.65) 80%, rgba(22, 27, 51, 1) 100%), var(--basicPoster);
+    background-size:cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    --switch: calc((var(--light) - var(--threshold)) * -100%);
+    color: hsl(0, 0%, var(--switch));
+    transition: 1s ease-in-out;
+}
+
+.basic_poster_next{
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    background: linear-gradient(180deg, rgba(13, 12, 29, 1) 0%, rgba(var(--test_colorNext), 0.65) 15%, rgba(var(--test_colorNext), 0.65) 80%, rgba(22, 27, 51, 1) 100%), var(--basicPosterNext);
+    background-size:cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    --switch: calc((var(--light) - var(--threshold)) * -100%);
+    color: hsl(0, 0%, var(--switch));
+    transition: 1s ease-in-out;
+}
+
+.blure-box{
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 0px 20px rgba(var(--test_color), 1);
+    background-color: rgba(var(--test_color), 0.5) ;
+    border-radius: 10px;
+    flex-direction: column;
+    padding: 10px;
+    backdrop-filter: blur(2px);
+}
+
+
+.basic_title{
+    margin: 0;
+}
+
 .main_text-popular{
     display: none;
     font-size: 20px;
+    color: white;
 }
 
 .main_text-top{
     display: none;
     font-size: 20px;
+    color: white;
 }
 
 .main_text-results{
@@ -103,27 +184,34 @@ body {
     font-size: 20px;
 }
 
+.info-title{
+    color: #dedede;
+}
+
 .text-show{
     display: flex;
 }
 .movie {
-    min-width: 160px;
     margin: 10px;
     position: relative;
     border-radius: 10px;
+    transition: .3s;
 }
 
 .tv{
-    min-width: 160px;
     margin: 10px;
     position: relative;
     border-radius: 10px;
 }
-
 
 .movie_poster{
     height: 250px;
     border-radius: 10px;
+    transition: .2s;
+}
+
+.movie_poster:hover, .movie_poster:active{
+    height: 280px;
 }
 
 .main_movies{
@@ -138,12 +226,11 @@ body {
     border-radius: 10px;
     z-index: 1;
     background: #BBD0FF;
+    background: #474973;
     box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
     margin-bottom: 30px;
 }
-.show{
-    display: flex;
-}
+
 .movies_top{
     display: flex;
     flex-wrap: nowrap;
@@ -152,12 +239,13 @@ body {
     border-radius: 10px;
     z-index: 2;
     background-color: #BBD0FF;
+    background-color: #474973;
     box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
     margin-bottom: 30px;
 }
 
 .movies_trend{
-    display: flex;
+    display: none;
     flex-wrap: nowrap;
     width: 100%;
     position: relative;
@@ -230,13 +318,14 @@ body {
     border: 0;
     position: absolute;
     height: 400px;
-    width: 750px;
+    width: 100%;
     padding: 0;
     border-radius: 20px;
     z-index: 101;
 }
 
 .modal_card{
+    width: 90vw;
     background: rgba(184, 192, 255);
     height: auto;
     border-radius: 20px;
@@ -302,6 +391,7 @@ body {
     margin-top: 5px;
     padding-top: 0;
     font-size: 14px;
+    position: absolute;
 }
 
 .movie-desc{
@@ -318,12 +408,13 @@ body {
     position: relative;
     z-index: 106;
     margin-left: 16px;
+    margin: 10px 16px 0 16px;
     height: 404px;
 }
 
 .modal_frame_trailer{
     height: 404px;
-    width: 716px;
+    width: 100%;
     border-radius: 20px;
 }
 
