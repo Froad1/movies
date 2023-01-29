@@ -360,8 +360,8 @@ body {
     display: flex;
     align-content: center;
     box-sizing: border-box;
-    padding: 16px;
-    padding-left: 40px;
+    margin: 16px;
+    margin-left: 40px;
     z-index: 103;
 }
 
@@ -374,11 +374,10 @@ body {
     width: 200px;
     height: 300px;
     z-index: 102;
-    padding: 16px;
+    margin: 16px;
 }
 .modal_movie-poster{
-    width: 200px;
-    height: 300px;
+    height: 100%;
     border-radius: 15px;
 }
 
@@ -403,7 +402,6 @@ body {
     margin-top: 5px;
     padding-top: 0;
     font-size: 14px;
-    position: absolute;
 }
 
 .movie-desc{
