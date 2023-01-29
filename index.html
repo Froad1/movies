@@ -11,11 +11,10 @@
     <title>fantq movies</title>
 </head>
 <body>
-    
     <header class="header">
         <div class="header_content">
             <a href="/index.html" class="header_content-logo">fantq</a>
-            <a href="./rating/index.html">rating</a>
+            <a href="./rating/index.html" class="header_content-rating">Рейтинг</a>
             <div class="input_all">
                     <form>
                         <input type="text" class="header_content-input" placeholder="Пошук" required="required"/>
@@ -24,12 +23,12 @@
                     <img src="search.svg" alt="error" class="input-icon" onclick="buttonOnClick()">
                 </span>
             </div>
+            <button class="btn_login">login</button>
         </div>
     </header>
 
     <section class="basic_content">
         <div class="basic_movie"></div>
-        <button class="change_basic_movie">Наступне</button>
     </section>
 
     <section class="main_content">
@@ -48,6 +47,7 @@
         </div>
     </section>
 
+    <div class="auntentificate"></div>
     <div class="modal"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
     <script src="https://cdn.rawgit.com/briangonzalez/rgbaster.js/b2fb235b/rgbaster.min.js"></script>

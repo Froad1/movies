@@ -14,10 +14,6 @@
     --threshold: 60;
 }
 
-.show{
-    display: flex;
-}
-
 .noshow{
     display: none;
 }
@@ -49,6 +45,13 @@ body {
 .header_content-logo{
     font-family: "e-UkraineHead";
     font-size: 28px;
+    text-decoration: none;
+    color: #474973;
+}
+
+.header_content-rating{
+    font-family: "e-UkraineHead";
+    font-size: 20px;
     text-decoration: none;
     color: #474973;
 }
@@ -96,27 +99,9 @@ body {
     text-indent: 10px;
 }
 
-.film-container {
+.basic_movie{
     position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.film {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transition: transform 1s ease-in-out;
-}
-
-.current-film {
-    z-index: 3;
-}
-
-.next-film {
-    z-index: 2;
+    transition: 5s ease-in-out;
 }
 
 .basic_poster{
@@ -125,13 +110,14 @@ body {
     height: 85vh;
     background: linear-gradient(180deg, rgba(13, 12, 29, 1) 0%, rgba(var(--test_color), 0.65) 15%, rgba(var(--test_color), 0.65) 80%, rgba(22, 27, 51, 1) 100%), var(--basicPoster);
     background-size:cover;
-    background-position: center;
+    background-position: right center;
     display: flex;
     align-items: center;
     justify-content: center;
     --switch: calc((var(--light) - var(--threshold)) * -100%);
     color: hsl(0, 0%, var(--switch));
     transition: 1s ease-in-out;
+    opacity: 0;
 }
 
 .basic_poster_next{
@@ -146,7 +132,6 @@ body {
     justify-content: center;
     --switch: calc((var(--light) - var(--threshold)) * -100%);
     color: hsl(0, 0%, var(--switch));
-    transition: 1s ease-in-out;
 }
 
 .blure-box{
@@ -162,6 +147,30 @@ body {
     backdrop-filter: blur(2px);
 }
 
+.auntentificate{
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.login_window{
+    z-index: 102;
+    height: 60vh;
+    width: 50%;
+    background-color: red;
+}
+
+.show{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .basic_title{
     margin: 0;
@@ -238,20 +247,19 @@ body {
     position: relative;
     border-radius: 10px;
     z-index: 2;
-    background-color: #BBD0FF;
     background-color: #474973;
     box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
     margin-bottom: 30px;
 }
 
-.movies_trend{
-    display: none;
+.movies_trending{
+    display: flex;
     flex-wrap: nowrap;
     width: 100%;
     position: relative;
     border-radius: 10px;
     z-index: 1;
-    background: #BBD0FF;
+    background: #474973;
     box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
     margin-bottom: 30px;
 }
@@ -291,11 +299,13 @@ body {
     z-index: 2;
     fill: none;
     pointer-events: auto;
+    transition: 2s ease-in-out;
 }
 .scroll-forward:hover .btn-scroll{
     fill: white;
     background-color: rgba(255, 255, 255, 0.3);
     border-radius: 100px;
+    transition: 2s ease-in-out;
 }
 
 

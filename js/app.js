@@ -21,6 +21,56 @@ document.querySelector(".main_text-popular").classList.add("text-show");
 document.querySelector(".main_text-top").classList.add("text-show");
 document.querySelector(".movies_searcheble").style.display = "none";
 fetchMainMovies(popularMovies, topRated, popularTv);
+//LOGIN
+
+var btnLogin = document.querySelector(".btn_login");
+let accRatingUrl
+
+btnLogin.addEventListener("click", async function roro(){
+    const auntentificate = document.querySelector(".auntentificate");
+    auntentificate.classList.add("show")
+    auntentificate.innerHTML = `
+        <div class="login_window">
+            <form>
+                <p class="login_text">Логін</p>
+                <input type="text" class="login">
+                <div class="pass_text">Пароль</div>
+                <input type="text" class="pass">
+            </form>
+            <button class="auntentificate_submit">Зайти</button>
+        </div>
+    `
+    document.querySelector(".auntentificate_submit").addEventListener("click", async function(){
+        if (document.querySelector(".login").value == ''){
+            console.log("no login")
+            return
+        }
+        else if(document.querySelector(".pass").value == ''){
+            console.log("no pass")
+            return
+        }
+        const login = await fetch('../database.json', {
+            headers:{
+                "Content-Type": "application/json"
+            }
+        })
+        const loginData = await login.json();
+        for(let i=0;i<loginData.length;i++){
+            if(loginData[i].login == document.querySelector(".login").value){
+                if (loginData[i].pass == document.querySelector(".pass").value){
+                    accRatingUrl = loginData[i].url;
+                    auntentificate.classList.remove("show");
+                    return
+                }
+            }
+        }
+    })
+    window.addEventListener("click", (e) => {
+        if (e.target === auntentificate) {
+            auntentificate.classList.remove("show");
+        }
+      })
+})
 
 
 //ГОЛОВНИЙ ФІЛЬМ
@@ -36,23 +86,10 @@ function displayNextFilm(){
         if(i === basicFilmId.length) i=0;
         fetchBasicMovies(i)
     }, 10000);
-    
-    document.querySelector(".change_basic_movie").addEventListener("click", function(){
-        clearInterval(intervalId);
-    });
 }
 
 fetchBasicMovies(i)
-$('.basic_poster').animate({
-    width: '0%',
-    height: '0%',
-  }, 500, function() {
-    fetchBasicMovies(i);
-    $('.basic_poster').animate({
-        width: '100%',
-        height: '100%',
-    }, 500);
-});
+
 async function fetchBasicMovies(i){
     if (basicFilmId[i] == 100088 || basicFilmId[i] == 119051){
         const fetchBasic = await fetch(tvInfo + basicFilmId[i] + API_KEY + "&language=uk", {
@@ -76,23 +113,27 @@ async function fetchBasicMovies(i){
 
 function showBasicMovies(data){
     const basicsEl = document.querySelector(".basic_movie");
+    basicsEl.innerHTML= ""
     basicsEl.innerHTML = `
-    <div class="basic-box">
         <div class="basic_poster">
             <div class="blure-box">
                 <h1 class="basic_title">${mov_tv()}</h1>
             </div>
         </div>
-    </div>
     `
-
+    setTimeout(function(){
+        document.querySelector(".basic_poster").style.opacity = "100%"
+    }, 100)
+    setTimeout(function(){
+        document.querySelector(".basic_poster").style.opacity = "0"
+    }, 9000)
     function mov_tv(){
         if(data.id == '100088' || data.id == '119051'){
             return `${data.name}`
         }
         else return `${data.title}`
     }
-    document.querySelector(".basic-box").addEventListener("click", () => {
+    document.querySelector(".basic_poster").addEventListener("click", () => {
         if(data.id == '100088'|| data.id == '119051'){
             openModal(data.id, tvInfo)
         }
@@ -153,11 +194,14 @@ async function fetchMainMovies(pop, top, trend){
 
 //ПОКАЗ ФІЛЬМІВ НА ГОЛОВНІЙ СТОРІНЦІ
 function showMainMovies(pop, top, trend){
+
     const moviesElPop = document.querySelector(".movies_popular");
     const moviesElTop = document.querySelector(".movies_top");
+    const moviesElTrend = document.querySelector(".movies_trending");
     
     document.querySelector(".movies_popular").innerHTML = "";
     document.querySelector(".movies_top").innerHTML = "";
+    document.querySelector(".movies_trending").innerHTML = "";
 
     pop.results.forEach(movie => {
         const movieElPop = document.createElement("div");
@@ -237,6 +281,39 @@ function showMainMovies(pop, top, trend){
 
     });
 
+    trend.results.forEach(movieTrend => {
+        const movieElTrend = document.createElement("div");
+        movieElTrend.classList.add("movie");
+        movieElTrend.innerHTML = `
+        <div class="movies_posters">
+            ${movieTrend.poster_path ? `<img src="${imageUrl}${movieTrend.poster_path}" class="movie_poster" alt="${movieTrend.original_title}"/>`: ''}
+        </div>
+        <div class="movie__cover--darkened"></div>
+        <div class="movie_info">
+            <div class="info-title">${movie_or_tv()}</div>
+            <div class="info-genre"></div>
+        </div>
+        `
+        function movie_or_tv(){
+            if(typeof movieTrend.title === "undefined"){
+                return `${movieTrend.name}`
+            }
+            else{
+                return `${movieTrend.title}`
+            }
+        };
+
+        movieElTrend.addEventListener("click", () => {
+            if(typeof movieTrend.title === "undefined"){
+                openModal(movieTrend.id, tvInfo)
+            }
+            else{
+                openModal(movieTrend.id, movieInfo)
+            }
+        })
+        moviesElTrend.appendChild(movieElTrend);
+
+    });
 }
 
 const form = document.querySelector("form");
@@ -409,27 +486,28 @@ async function openModal(id , movie_or_tv){
     const sendRatingButton = document.querySelector('.send_rating-button');
     sendRatingButton.addEventListener('submit', (e) =>{
         e.preventDefault();
-        ratingPOST()
+        if(accRatingUrl == undefined){
+            console.log("not logined")
+        }
+        else ratingPOST(accRatingUrl)
+        
     })
 
     sendRatingButton.onclick = function alertpass(){
-        let pass = prompt("Введіть пароль:")
-        if(pass == 1233){
-            ratingPOST()
+        if(accRatingUrl == undefined){
+            console.log("not logined")
         }
-        else{
-            alert("Ви ввели невірний пароль!")
-        }
+        else ratingPOST(accRatingUrl)
     }
 
-    function ratingPOST(){
+    function ratingPOST(url){
         const input_rating = document.querySelector(".input_rating")
         const data = {id_movie: mov_or_tv_name ,rating: input_rating.value,img: imageUrl + respData.poster_path}
         input_rating.value = "";
 
         post();
         async function post(){
-            const rating = await fetch(ratingUrl, {
+            const rating = await fetch(url, {
                 method: "POST",
                 headers:{
                     "Content-Type": "application/json"
@@ -465,7 +543,6 @@ async function openModal(id , movie_or_tv){
     
     img.crossOrigin = 'Anonymous';
     img.src = googleProxyURL + encodeURIComponent(imageURL);
-
 };
 
     //RGB TO HSL

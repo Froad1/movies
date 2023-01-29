@@ -2,66 +2,48 @@ const baseUrl = 'https://6387e991d94a7e50408faf43.mockapi.io/api/v1/id_movie';
 
 password()
 function password(){
-    const pass = document.querySelector(".pass")
-    pass.addEventListener('submit', passValide)
-    
-    if(passValide() == true){
-        console.log(true)
-    }
-    else{
-        console.log(false)
-    }
-
-    const btnValide = document.querySelector(".btnvalide")
-    const inputPass = document.querySelector(".pass")
-    btnValide.addEventListener('click', passValide)
-    function passValide(){
-        console.log("123")
-        if(pass.value === "12333"){
-            get()
-            btnValide.classList.add("noneDisplay")
-            inputPass.classList.add("noneDisplay")
-            document.querySelector(".update").classList.remove("noneDisplay")
-            console.log("OK")
-            return true
+    const btnValide = document.querySelector(".btnvalide");
+    const inputPass = document.querySelector(".pass");
+    const inputLogin = document.querySelector(".login");
+    document.querySelector(".btnvalide").addEventListener("click", async function(){
+        if (inputLogin.value == ''){
+            console.log("no login")
+            return
         }
-        else if(pass.value === "33321"){
-            let account2url = "https://6387e991d94a7e50408faf43.mockapi.io/api/v1/account2";
-            get(account2url)
-            btnValide.classList.add("noneDisplay")
-            inputPass.classList.add("noneDisplay")
-            document.querySelector(".update").classList.remove("noneDisplay")
-            console.log("OK")
-            return true
+        else if(inputPass.value == ''){
+            console.log("no pass")
+            return
         }
-        else{
-            console.log("Error")
-            return false
+        const login = await fetch('../database.json', {
+            headers:{
+                "Content-Type": "application/json"
+            }
+        })
+        const loginData = await login.json();
+        for(let i=0;i<loginData.length;i++){
+            if(loginData[i].login == inputLogin.value){
+                if (loginData[i].pass == inputPass.value){
+                    get(loginData[i].url);
+                    btnValide.classList.add("noneDisplay");
+                    inputLogin.classList.add("noneDisplay");
+                    inputPass.classList.add("noneDisplay");
+                    return
+                }
+            }
         }
-    }
+    })
 }
 
 //Отримання
 async function get(data){
     setTimeout(1500)
-    if(data == undefined){
-        const getList = await fetch(baseUrl, {
-            headers:{
-                "Content-Type": "application/json"
-            }
-        })
-        const response = await getList.json()
-        show(response)
-    }
-    else {
-        const getList = await fetch(data, {
-            headers:{
-                "Content-Type": "application/json"
-            }
-        })
-        const response = await getList.json()
-        show(response)
-    }
+    const getList = await fetch(data, {
+        headers:{
+            "Content-Type": "application/json"
+        }
+    })
+    const response = await getList.json()
+    show(response)
 }
 //Показ
 function show(data){
@@ -123,6 +105,12 @@ function del(data){
 function rateChangeShow(data){
     document.querySelector(".change_rate-inpt" + data).classList.remove("noneDisplay")
     document.querySelector(".change_rate-butt" + data).classList.remove("noneDisplay")
+    window.addEventListener("keydown", (e) => {
+        if (e.keyCode === 27) {
+            document.querySelector(".change_rate-inpt" + data).classList.add("noneDisplay")
+            document.querySelector(".change_rate-butt" + data).classList.add("noneDisplay")
+        }
+      })
 }
 
 function rateChange(data){
