@@ -59,7 +59,6 @@ btnLogin.addEventListener("click", async function roro(){
             if(loginData[i].login == document.querySelector(".login").value){
                 if (loginData[i].pass == document.querySelector(".pass").value){
                     accRatingUrl = loginData[i].url;
-                    auntentificate.classList.remove("show");
                     return
                 }
             }
@@ -112,19 +111,6 @@ async function fetchBasicMovies(i){
 }
 
 function showBasicMovies(data){
-
-fetchBasicMovies(i)
-$('.basic_poster').animate({
-    width: '0%',
-    height: '0%',
-  }, 500, function() {
-    fetchBasicMovies(i);
-    $('.basic_poster').animate({
-        width: '100%',
-        height: '100%',
-    }, 500);
-});
-
     const basicsEl = document.querySelector(".basic_movie");
     basicsEl.innerHTML= ""
     basicsEl.innerHTML = `
