@@ -450,7 +450,7 @@ async function openModal(id , movie_or_tv){
             <div class="modal_movie-posters">
                 <img src="${imageUrl}${respData.poster_path}" alt="" class="modal_movie-poster">
             </div>
-            <div class="modal_background-posters"></div>
+
             <div class="modal_movie">
                 <div class="modal-text">
                     <h2 class="modal_movie-title">
@@ -462,14 +462,12 @@ async function openModal(id , movie_or_tv){
                     <p class="info-desc">${respData.overview}</p>` : ''}
                     ${respData.vote_average ? `<p class="movie-rate">Оцінка</p>
                     <p class="info-rate">${respData.vote_average}</p>` : ''}
-                    <form>
-                        <input type="text" class="input_rating">
-                    </form>
+                    <input type="text" class="input_rating">
                     <button class="send_rating-button" placeholder="Оцінка">Оцінити</button>
                     <img src="./images/close.svg" class="modal_button-close"/>
                 </div>
             </div>
-            
+            <div class="modal_background-posters"></div>
         </div>
         <div class="modal_trailer">
             ${ trailerKey ? `<iframe src="${ "https://www.youtube.com/embed/" + trailerKey}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="modal_frame_trailer"></iframe>`: ''}

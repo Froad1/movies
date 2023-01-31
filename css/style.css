@@ -358,8 +358,6 @@ body {
 
 .modal_movie{
     display: flex;
-    align-content: center;
-    box-sizing: border-box;
     margin: 16px;
     margin-left: 40px;
     z-index: 103;
