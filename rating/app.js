@@ -1,4 +1,5 @@
 const baseUrl = 'https://6387e991d94a7e50408faf43.mockapi.io/api/v1/id_movie';
+var loginUrl
 
 password()
 function password(){
@@ -23,10 +24,12 @@ function password(){
         for(let i=0;i<loginData.length;i++){
             if(loginData[i].login == inputLogin.value){
                 if (loginData[i].pass == inputPass.value){
+                    loginUrl = loginData[i].url;
                     get(loginData[i].url);
                     btnValide.classList.add("noneDisplay");
                     inputLogin.classList.add("noneDisplay");
                     inputPass.classList.add("noneDisplay");
+                    document.querySelector('.update').classList.remove("noneDisplay")
                     return
                 }
             }
@@ -76,7 +79,7 @@ function getInpt(){
     const data = {id_movie: inputElement.value,rating: inputElementRate.value}
     post()
     async function post(){
-        const getList = await fetch(baseUrl, {
+        const getList = await fetch(loginUrl, {
             method: "POST",
             headers:{
                 "Content-Type": "application/json"
@@ -85,7 +88,7 @@ function getInpt(){
         })
         const response = await getList.json()
         console.log(response)
-        get()
+        get(loginUrl)
     }
     
 }
@@ -95,10 +98,10 @@ function del(data){
         post()
     };
     async function post(){
-        const getList = await fetch(baseUrl + '/'+ data, {
+        const getList = await fetch(loginUrl + '/'+ data, {
             method: "DELETE",
         })
-        get()
+        get(loginUrl)
     }
 }
 
@@ -118,17 +121,18 @@ function rateChange(data){
     const data1 = {rating: changeInput.value}
     put()
     async function put(){
-        const getList = await fetch(baseUrl + "/" + data, {
+        const getList = await fetch(loginUrl + "/" + data, {
             method: "PUT",
             headers:{
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(data1)
         })
-        get()
+        get(loginUrl)
     }
 }
 
 document.querySelector(".update").onclick = function updateRate(){
-    get()
+    console.log(loginUrl)
+    get(loginUrl)
 }
