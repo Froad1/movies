@@ -455,8 +455,9 @@ async function openModal(id , movie_or_tv){
     }
     const trailerKey = await showTrailer();
     modalEl.classList.add("modal-show");
-
-    const mockurlGET = `https://6387e991d94a7e50408faf43.mockapi.io/api/v1/id_movie?id_movie=${respData.id}`;
+    console.log(accRatingUrl)
+    if (accRatingUrl != undefined){
+    const mockurlGET = `${accRatingUrl}?id_movie=${respData.id}`;
         const getList = await fetch(mockurlGET, {
             headers:{
                 "Content-Type": "application/json"
@@ -466,7 +467,7 @@ async function openModal(id , movie_or_tv){
         var yourRate
         response.forEach(data =>{
             yourRate = data.rating
-        })
+        })}
     modalEl.innerHTML = `
     <div class="modal_card">
         <div class="modal_header">
