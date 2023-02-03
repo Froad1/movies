@@ -60,7 +60,7 @@ async function log(){
 
         auntentificate.classList.remove("show")
         document.querySelector(".btn_login").style.display = "none";
-        const login = await fetch('../database.json', {
+        const login = await fetch('./database.json', {
             headers:{
                 "Content-Type": "application/json"
             }
