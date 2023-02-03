@@ -408,18 +408,7 @@ body {
     border-radius: 20px;
     max-width: 750px;
     background-size: cover;
-}
-
-.eeeeeee{
-    width: 100%;
-    display: flex;
-}
-
-.modal_movie-posteeee{
-    height: 50vh;
-    z-index: 102;
-    margin: 16px;
-    float:left;
+    padding: 16px;
 }
 
 .modal-show {
@@ -428,9 +417,9 @@ body {
 }
 
 .modal_movie-posters{
-    height: 50vh;
+    height: 60vh;
     z-index: 102;
-    margin: 16px;
+    margin: 0 16px 0 0;
     float:left;
 }
 .modal_movie-poster{
@@ -442,7 +431,6 @@ body {
 .modal-text{
     --switch: calc((var(--light) - var(--threshold)) * -100%);
     color: hsl(0, 0%, var(--switch));
-    margin: 16px 0 0 0; 
     z-index: 103;
 }
 
