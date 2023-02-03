@@ -26,13 +26,17 @@ fetchMainMovies(popularMovies, topRated, popularTv);
 var btnLogin = document.querySelector(".btn_login");
 let accRatingUrl
 
-btnLogin.addEventListener("click", async function roro(){
+btnLogin.addEventListener("click", ()=>{
+    log()
+} )
+
+async function log(){
     const auntentificate = document.querySelector(".auntentificate");
-    auntentificate.classList.add("show")
+    auntentificate.classList.add("show");
     auntentificate.innerHTML = `
         <div class="login_window">
             <form>
-                <p class="login_text">Логін</p>
+                <div class="login_text">Логін</div>
                 <input type="text" class="login">
                 <div class="pass_text">Пароль</div>
                 <input type="text" class="pass">
@@ -42,13 +46,20 @@ btnLogin.addEventListener("click", async function roro(){
     `
     document.querySelector(".auntentificate_submit").addEventListener("click", async function(){
         if (document.querySelector(".login").value == ''){
+            document.querySelector(".login").style.borderColor = "red";
+            setTimeout(function(){document.querySelector(".login").style.borderColor = "none"},1000)
             console.log("no login")
             return
         }
         else if(document.querySelector(".pass").value == ''){
+            document.querySelector(".pass").style.borderColor = "red";
+            setTimeout(function(){document.querySelector(".pass").style.borderColor = "none"},1000)
             console.log("no pass")
             return
         }
+
+        auntentificate.classList.remove("show")
+        document.querySelector(".btn_login").style.display = "none";
         const login = await fetch('../database.json', {
             headers:{
                 "Content-Type": "application/json"
@@ -69,8 +80,7 @@ btnLogin.addEventListener("click", async function roro(){
             auntentificate.classList.remove("show");
         }
       })
-})
-
+}
 
 //ГОЛОВНИЙ ФІЛЬМ
 var basicFilmId = ['100088','76600','315162','119051'];
@@ -356,6 +366,8 @@ function showSearchebleMovies(data){
     document.querySelector(".movies_searcheble").classList.add("text-show");
     document.querySelector(".movies_popular").classList.remove("text-show");
     document.querySelector(".movies_top").classList.add("text-show");
+    document.querySelector(".movies_trending").style.display = "none";
+    document.querySelector(".basic_content").style.display = "none";
     document.querySelector(".movies_searcheble").innerHTML = "";
 
 
@@ -444,47 +456,68 @@ async function openModal(id , movie_or_tv){
     const trailerKey = await showTrailer();
     modalEl.classList.add("modal-show");
 
+    const mockurlGET = `https://6387e991d94a7e50408faf43.mockapi.io/api/v1/id_movie?id_movie=${respData.id}`;
+        const getList = await fetch(mockurlGET, {
+            headers:{
+                "Content-Type": "application/json"
+            }
+        })
+        const response = await getList.json()
+        var yourRate
+        response.forEach(data =>{
+            yourRate = data.rating
+        })
     modalEl.innerHTML = `
     <div class="modal_card">
         <div class="modal_header">
-            <div class="modal_movie-posters">
-                <img src="${imageUrl}${respData.poster_path}" alt="" class="modal_movie-poster">
-            </div>
-
-            <div class="modal_movie">
-                <div class="modal-text">
-                    <h2 class="modal_movie-title">
-                        <span class="movie-title">${mov_or_tv_name}</span>
-                        <span class="movie-year">(${releaseDate()})</span>
-                    </h2>
-                    <p class="movie-genres">${respData.genres.map((el) => `${el.name}`)}</p>
-                    ${respData.overview ? `<p class="movie-desc">Опис</p>
-                    <p class="info-desc">${respData.overview}</p>` : ''}
-                    ${respData.vote_average ? `<p class="movie-rate">Оцінка</p>
-                    <p class="info-rate">${respData.vote_average}</p>` : ''}
-                    <input type="text" class="input_rating">
-                    <button class="send_rating-button" placeholder="Оцінка">Оцінити</button>
-                    <img src="./images/close.svg" class="modal_button-close"/>
+            <div class="modal-text">
+                <div class="modal_movie-posters">
+                    <img src="${imageUrl}${respData.poster_path}" alt="" class="modal_movie-poster">
                 </div>
+                <h2 class="modal_movie-title">
+                    <span class="movie-title">${mov_or_tv_name}</span>
+                    <span class="movie-year">(${releaseDate()})</span>
+                </h2>
+                <!--<p class="movie-genres">${respData.genres.map((el) => `${el.name}`)}</p>-->
+                ${respData.overview ? `<p class="movie-desc">Опис</p>
+                <p class="info-desc">${respData.overview}</p>` : ''}
+                ${respData.vote_average ? `<p class="movie-rate">Оцінка</p>
+                <p class="info-rate">${respData.vote_average}</p>` : ''}
+                ${yourRate ?`<p class="your-rate-text">Ваша оцінка</p>`: ''}
+                ${yourRate ? `<p class="your-rate">${yourRate}</p>`:`
+                <input type="text" class="input_rating">
+                <button class="send_rating-button" placeholder="Оцінка">Оцінити</button>
+                <p class="rating_text-error"></p>`}
+                <img src="./images/close.svg" class="modal_button-close"/>
             </div>
-            <div class="modal_background-posters"></div>
         </div>
+        ${ trailerKey ? `
         <div class="modal_trailer">
-            ${ trailerKey ? `<iframe src="${ "https://www.youtube.com/embed/" + trailerKey}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="modal_frame_trailer"></iframe>`: ''}
-        </div>
+            <iframe src="${ "https://www.youtube.com/embed/" + trailerKey}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="modal_frame_trailer"></iframe>
+        </div>`: ''}
     </div>
     `
-
-    document.querySelector(".modal_background-posters").style.setProperty("--background_poster", `url(${backgroundUrl +respData.backdrop_path})`);
+    console.log(respData.id)
+    document.querySelector(".modal_header").style.setProperty("--background_poster", `url(${backgroundUrl +respData.backdrop_path})`);
 
     const btnClose = document.querySelector(".modal_button-close");
     btnClose.addEventListener("click", () => closeModal());
 
     const sendRatingButton = document.querySelector('.send_rating-button');
+
+    var ratingTextError = document.querySelector(".rating_text-error");
+    if(yourRate == undefined){
+    ratingTextError.style.display = "none";
     sendRatingButton.addEventListener('submit', (e) =>{
         e.preventDefault();
         if(accRatingUrl == undefined){
             console.log("not logined")
+            ratingTextError.style.display = "flex";
+            ratingTextError.innerHTML = "Ви не зайшли в особистий кабінет"
+            ratingTextError.addEventListener("click", () =>{
+                closeModal()
+                log()
+            })
         }
         else ratingPOST(accRatingUrl)
         
@@ -493,13 +526,19 @@ async function openModal(id , movie_or_tv){
     sendRatingButton.onclick = function alertpass(){
         if(accRatingUrl == undefined){
             console.log("not logined")
+            ratingTextError.style.display = "flex";
+            ratingTextError.innerHTML = "Ви не зайшли в особистий кабінет";
+            ratingTextError.addEventListener("click", () =>{
+                closeModal()
+                log()
+            })
         }
         else ratingPOST(accRatingUrl)
-    }
+    }}
 
     function ratingPOST(url){
         const input_rating = document.querySelector(".input_rating")
-        const data = {id_movie: mov_or_tv_name ,rating: input_rating.value,img: imageUrl + respData.poster_path}
+        const data = {id_movie: respData.id, name: mov_or_tv_name ,rating: input_rating.value,img: imageUrl + respData.poster_path}
         input_rating.value = "";
 
         post();
@@ -533,7 +572,7 @@ async function openModal(id , movie_or_tv){
     img.addEventListener('load', function() {   
       var clr = colorThief.getColor(img)
       RGBToHSL(...clr)
-      document.querySelector(".modal_background-posters").style.setProperty("--test_color", `${clr}`);
+      document.querySelector(".modal_header").style.setProperty("--test_color", `${clr}`);
     });
     let imageURL = backgroundUrl +respData.backdrop_path;
     let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';

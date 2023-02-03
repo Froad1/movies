@@ -37,7 +37,7 @@ body {
     align-items: flex-end;
     text-align: flex-end;
     justify-content: space-between;
-    padding: 0 50px 0 25px;
+    padding: 0 6% 0 3%;
     gap: 30px;
     display: flex;
 }
@@ -56,27 +56,40 @@ body {
     color: #474973;
 }
 
+.search_login{
+    display: flex;
+    align-items: flex-end;
+}
+
+.btn_login{
+    margin-right: 10px;
+    fill: #474973;
+}
+
 .input_all{
     text-align: left;
     width: 14vw;
     height: 34px;
     position: relative;
     text-align: center;
+    transition: 0.5s;
 }
 
-.input_all span{
+.input-icon{
+    transition: 0.5s;
+}
+.input_all .input-icon{
     position: absolute;
     left: 12px;
     top: 8px;
     transition: 0.5s;
 }
 
-.input_all form:valid ~ .span{
-    transform: translateX(200px);
-}
+.input_all form:valid ~ .input-icon{
+    transform: translateX(180px);
+    filter: invert(28%) sepia(19%) saturate(1184%) hue-rotate(199deg) brightness(89%) contrast(85%)}
 
-.span:hover{
-    filter: invert(41%) sepia(5%) saturate(86%) hue-rotate(71deg) brightness(96%) contrast(84%);
+.input-icon:hover{
     cursor: pointer;
 }
 
@@ -103,7 +116,7 @@ body {
     width: 100%;
     height: 85vh;
     position: relative;
-    transition: 5s ease-in-out;
+    transition: 3s ease-in-out;
 }
 
 .basic_poster{
@@ -162,10 +175,44 @@ body {
 }
 
 .login_window{
+    display: flex;
     z-index: 102;
-    height: 60vh;
-    width: 50%;
-    background-color: red;
+    padding: 50px;
+    background-color: #161B33;
+    border-radius: 20px;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.login_text{
+    color: white;
+}
+
+.login{
+    background: #474973;
+    box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
+    border-radius: 9px;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    text-indent: 10px;
+    margin-bottom: 25px;
+    transition: 0.5s;
+}
+
+.pass_text{
+    color: white;
+}
+
+.pass{
+    background: #474973;
+    box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
+    border-radius: 9px;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    text-indent: 10px;
+    transition: 0.5s;
 }
 
 .show{
@@ -192,6 +239,7 @@ body {
 
 .main_text-results{
     display: none;
+    color: white;
     font-size: 20px;
 }
 
@@ -213,6 +261,10 @@ body {
     margin: 10px;
     position: relative;
     border-radius: 10px;
+}
+
+.movie_title{
+    color: white;
 }
 
 .movie_poster{
@@ -272,7 +324,7 @@ body {
     width: 100%;
     position: relative;
     border-radius: 10px;
-    background-color: #BBD0FF;
+    background-color: #474973;
     box-shadow: 0px 0px 6px 5px rgba(34, 60, 80, 0.10);
 }
 
@@ -348,19 +400,26 @@ body {
 }
 
 .modal_header{
+    background-image: linear-gradient(to right, rgba(var(--test_color), 1) calc((50vw - 170px) - 340px), rgba(var(--test_color), 0.84) 30%, rgba(var(--test_color), 0.84) 100%), var(--background_poster);
     position: relative;
     height: auto;
     display: flex;
     z-index: 102;
     border-radius: 20px;
     max-width: 750px;
+    background-size: cover;
 }
 
-.modal_movie{
+.eeeeeee{
+    width: 100%;
     display: flex;
+}
+
+.modal_movie-posteeee{
+    height: 50vh;
+    z-index: 102;
     margin: 16px;
-    margin-left: 40px;
-    z-index: 103;
+    float:left;
 }
 
 .modal-show {
@@ -369,19 +428,22 @@ body {
 }
 
 .modal_movie-posters{
-    width: 200px;
-    height: 300px;
+    height: 50vh;
     z-index: 102;
     margin: 16px;
+    float:left;
 }
 .modal_movie-poster{
     height: 100%;
     border-radius: 15px;
+    float:left;
 }
 
 .modal-text{
     --switch: calc((var(--light) - var(--threshold)) * -100%);
     color: hsl(0, 0%, var(--switch));
+    margin: 16px 0 0 0; 
+    z-index: 103;
 }
 
 .movie-title{

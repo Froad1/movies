@@ -56,7 +56,7 @@ function show(data){
         ratin.innerHTML = `
         <div class="film_card">
             <img src="${rate.img}" alt="Error" width="200px">
-            <p class="rate_text">${rate.id_movie} = ${rate.rating}/10
+            <p class="rate_text">${rate.name} = ${rate.rating}/10
             <span class="change_rate-span"><img src="edit.svg" alt="Error" class="change_rate" onclick="rateChangeShow(${rate.id})"></span></p>
             <img src="close.svg" alt="Error" class="rate_delete noneDisplay" onclick="del(${rate.id})">
             <input type="text" class="change_rate-inpt${rate.id} noneDisplay">
