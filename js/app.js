@@ -21,17 +21,45 @@ document.querySelector(".main_text-popular").classList.add("text-show");
 document.querySelector(".main_text-top").classList.add("text-show");
 document.querySelector(".movies_searcheble").style.display = "none";
 fetchMainMovies(popularMovies, topRated, popularTv);
+
 //LOGIN
 
-var btnLogin = document.querySelector(".btn_login");
 let accRatingUrl
+console.log(document.cookie)
+predLogin()
+async function predLogin(){
 
-btnLogin.addEventListener("click", ()=>{
-    log()
-} )
+    const login = await fetch('./database.json', {
+        headers:{
+            "Content-Type": "application/json"
+        }
+    })
+    const loginData = await login.json();    
 
-async function log(){
     const auntentificate = document.querySelector(".auntentificate");
+
+    var cookies = document.cookie.split(";");
+    for(let l=0; l<loginData.length;l++){
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim().split("=");
+            if (cookie[0] == "user") {
+                if (cookie[1] == loginData[l].login) {
+                    auntentificate.classList.remove("show")
+                    document.querySelector(".btn_login").style.display = "none";
+                    accRatingUrl = loginData[l].url;
+                } else {
+                // Значення куки "cookieName" не дорівнює "expectedValue"
+                }
+                break;
+            }
+        }
+    
+    }
+    var btnLogin = document.querySelector(".btn_login");
+    btnLogin.addEventListener("click", ()=>{
+        log()
+    } )
+    async function log(){
     auntentificate.classList.add("show");
     auntentificate.innerHTML = `
         <div class="login_window">
@@ -57,18 +85,15 @@ async function log(){
             console.log("no pass")
             return
         }
-
-        auntentificate.classList.remove("show")
-        document.querySelector(".btn_login").style.display = "none";
-        const login = await fetch('./database.json', {
-            headers:{
-                "Content-Type": "application/json"
-            }
-        })
-        const loginData = await login.json();
+        console.log(document.querySelector(".login").value)
+        console.log(loginData)
         for(let i=0;i<loginData.length;i++){
             if(loginData[i].login == document.querySelector(".login").value){
                 if (loginData[i].pass == document.querySelector(".pass").value){
+                    console.log("1")
+                    auntentificate.classList.remove("show")
+                    document.querySelector(".btn_login").style.display = "none";
+                    document.cookie = `user=${loginData[i].login}`
                     accRatingUrl = loginData[i].url;
                     return
                 }
@@ -80,6 +105,7 @@ async function log(){
             auntentificate.classList.remove("show");
         }
       })
+}
 }
 
 //ГОЛОВНИЙ ФІЛЬМ
