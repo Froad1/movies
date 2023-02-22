@@ -363,8 +363,69 @@ form.addEventListener("submit", (e) => {
     }
   });
 
+inpt.addEventListener("focus",function(){
+    if (inpt.value != ""){
+        $(".pred_search").show(500)
+    }
+})
+
+inpt.addEventListener("input", function(){
+    $(".pred_search").show(500)
+    if (inpt.value != ""){
+    predSearch(inpt.value)}
+})
+
+inpt.addEventListener("blur", function(){
+    $(".pred_search").hide(500)
+})
+
+async function predSearch(data){
+    const new_searchURL = searchUrl + "&query=" + inpt.value;
+    const resp = await fetch(new_searchURL, {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    const respData = await resp.json();
+    respData.results.splice(5);
+    predSearchShow(respData)
+}
+
+function predSearchShow(data){
+    const predSearchMovies = document.querySelector(".pred_search");
+    predSearchMovies.innerHTML="";
+    data.results.forEach(movie =>{
+        const predMovie = document.createElement("div");
+        predMovie.classList.add("pred_movie");
+        predMovie.innerHTML = `
+            ${movie.poster_path ? `<img src="${imageUrl}${movie.poster_path}" class="pred_mov-img"/>`: ''}
+            <div class="pred_mov-title">${movie_or_tv()}</div>
+        `
+        function movie_or_tv(){
+            if(movie.media_type === "tv"){
+                return `${movie.name}`
+            }
+            else{
+                return `${movie.title}`
+            }
+        };
+        predMovie.addEventListener("click", () => {
+            if(movie.media_type === "tv"){
+                openModal(movie.id, tvInfo)
+                inpt.value = "";
+            }
+            else{
+                openModal(movie.id, movieInfo)
+                inpt.value = "";
+            }
+        })
+        predSearchMovies.appendChild(predMovie)
+    })
+}
+
 function buttonOnClick(event){
     closeModal();
+    $(".pred_search").hide(500)
     document.querySelector(".main_text-popular").classList.remove("text-show");
     document.querySelector(".main_text-top").classList.remove("text-show");
     document.querySelector(".movies_popular").style.display = "none";
