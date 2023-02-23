@@ -23,14 +23,41 @@ document.querySelector(".movies_searcheble").style.display = "none";
 fetchMainMovies(popularMovies, topRated, popularTv);
 //LOGIN
 
-var btnLogin = document.querySelector(".btn_login");
 let accRatingUrl
+predLogin()
+async function predLogin(){
 
-btnLogin.addEventListener("click", ()=>{
-    log()
-} )
+    const login = await fetch('./database.json', {
+        headers:{
+            "Content-Type": "application/json"
+        }
+    })
+    const loginData = await login.json();    
 
-async function log(){
+    const auntentificate = document.querySelector(".auntentificate");
+
+    var cookies = document.cookie.split(";");
+    for(let l=0; l<loginData.length;l++){
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim().split("=");
+            if (cookie[0] == "user") {
+                if (cookie[1] == loginData[l].login) {
+                    auntentificate.classList.remove("show")
+                    document.querySelector(".btn_login").style.display = "none";
+                    accRatingUrl = loginData[l].url;
+                } else {
+                // Значення куки "cookieName" не дорівнює "expectedValue"
+                }
+                break;
+            }
+        }
+    
+    }
+    var btnLogin = document.querySelector(".btn_login");
+    btnLogin.addEventListener("click", ()=>{
+        log()
+    } )}
+    async function log(){
     const auntentificate = document.querySelector(".auntentificate");
     auntentificate.classList.add("show");
     auntentificate.innerHTML = `
@@ -44,6 +71,12 @@ async function log(){
             <button class="auntentificate_submit">Зайти</button>
         </div>
     `
+    const login = await fetch('./database.json', {
+        headers:{
+            "Content-Type": "application/json"
+        }
+    })
+    const loginData = await login.json();
     document.querySelector(".auntentificate_submit").addEventListener("click", async function(){
         if (document.querySelector(".login").value == ''){
             document.querySelector(".login").style.borderColor = "red";
@@ -57,18 +90,12 @@ async function log(){
             console.log("no pass")
             return
         }
-
-        auntentificate.classList.remove("show")
-        document.querySelector(".btn_login").style.display = "none";
-        const login = await fetch('./database.json', {
-            headers:{
-                "Content-Type": "application/json"
-            }
-        })
-        const loginData = await login.json();
         for(let i=0;i<loginData.length;i++){
             if(loginData[i].login == document.querySelector(".login").value){
                 if (loginData[i].pass == document.querySelector(".pass").value){
+                    auntentificate.classList.remove("show")
+                    document.querySelector(".btn_login").style.display = "none";
+                    document.cookie = `user=${loginData[i].login}`
                     accRatingUrl = loginData[i].url;
                     return
                 }
@@ -83,92 +110,93 @@ async function log(){
 }
 
 //ГОЛОВНИЙ ФІЛЬМ
-var basicFilmId = ['100088','76600','315162','119051'];
-var i = 0;
-
-var btnChangeBasicMov =  document.querySelector(".change_basic_movie");
-displayNextFilm()
-function displayNextFilm(){
-    let i = 0;
-    let intervalId = setInterval(function() {
-        i++;
-        if(i === basicFilmId.length) i=0;
-        fetchBasicMovies(i)
-    }, 10000);
-}
-
-fetchBasicMovies(i)
-
-async function fetchBasicMovies(i){
-    if (basicFilmId[i] == 100088 || basicFilmId[i] == 119051){
-        const fetchBasic = await fetch(tvInfo + basicFilmId[i] + API_KEY + "&language=uk", {
-            headers:{
-                "Content-Type": "application/json"
+var basicFilmId = ['100088', '76600', '315162', '119051'];
+for(let i=0;i<basicFilmId.length;i++){
+    fetchBasicMovies(i)
+    async function fetchBasicMovies(i) {
+        const fetchBasic = await fetch(
+            (basicFilmId[i] == 100088 || basicFilmId[i] == 119051) 
+            ? tvInfo + basicFilmId[i] + API_KEY + "&language=uk" 
+            : movieInfo + basicFilmId[i] + API_KEY + "&language=uk", 
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                }
             }
-        })
+        );
         const fetchBasicData = await fetchBasic.json();
-        showBasicMovies(fetchBasicData);
-    }
-    else{
-        const fetchBasic = await fetch(movieInfo + basicFilmId[i] + API_KEY + "&language=uk", {
-            headers:{
-                "Content-Type": "application/json"
-            }
-        })
-        const fetchBasicData = await fetchBasic.json();
-        showBasicMovies(fetchBasicData);
+        console.log(fetchBasicData)
+
+        const colorThief = new ColorThief();
+        const img = new Image();
+        img.addEventListener('load', function() {
+            const clr = colorThief.getColor(img);
+            RGBToHSL(...clr);
+            ShowBasicMovies(fetchBasicData, i, clr)
+        });
+        const imageURL = imageUrlOrig + fetchBasicData.backdrop_path;
+        const googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
+    
+        img.crossOrigin = 'Anonymous';
+        img.src = googleProxyURL + encodeURIComponent(imageURL);  
     }
 }
-
-function showBasicMovies(data){
-    const basicsEl = document.querySelector(".basic_movie");
-    basicsEl.innerHTML= ""
-    basicsEl.innerHTML = `
-        <div class="basic_poster">
-            <div class="blure-box">
-                <h1 class="basic_title">${mov_tv()}</h1>
+function ShowBasicMovies(fetchBasicData, i, clr){
+    $(".basic_content").append(`
+        <div class="basic_img" id="image_${i+1}" ${iDet(clr)}>
+            <div class="blure-box" style="box-shadow: 0px 0px 20px rgba(${clr}, 1); background-color: rgba(${clr}, 0.5) ;">
+                <h1 class="basic_title">${mov_or_tv_name()}</h1>
             </div>
         </div>
-    `
-    setTimeout(function(){
-        document.querySelector(".basic_poster").style.opacity = "100%"
-    }, 100)
-    setTimeout(function(){
-        document.querySelector(".basic_poster").style.opacity = "0"
-    }, 9000)
-    function mov_tv(){
-        if(data.id == '100088' || data.id == '119051'){
-            return `${data.name}`
-        }
-        else return `${data.title}`
+    `);
+    function mov_or_tv_name(){
+        if(fetchBasicData.title) return fetchBasicData.title 
+        else return fetchBasicData.name
     }
-    document.querySelector(".basic_poster").addEventListener("click", () => {
-        if(data.id == '100088'|| data.id == '119051'){
-            openModal(data.id, tvInfo)
-        }
-        else {
-            openModal(data.id, movieInfo)
-        }
-    })
 
-    document.querySelector(".basic_poster").style.setProperty("--basicPoster", `url(${imageUrlOrig + data.backdrop_path})`);
 
-    const colorThief = new ColorThief();
-    const img = new Image();
-    
-    img.addEventListener('load', function() {   
-      var clr = colorThief.getColor(img)
-      RGBToHSL(...clr)
-      document.querySelector(".basic_poster").style.setProperty("--test_color", `${clr}`);
-      document.querySelector(".header_content").style.setProperty("--test_color", `${clr}`)
-      document.querySelector(".blure-box").style.setProperty("--test_color", `${clr}`);
-    });
-    let imageURL = imageUrlOrig + data.backdrop_path;
-    let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
-    
-    img.crossOrigin = 'Anonymous';
-    img.src = googleProxyURL + encodeURIComponent(imageURL);
+    // create HTML elements
+
+    function iDet(clr) {
+        if (i == 0) {
+            return `style="position: absolute; background: linear-gradient(180deg, rgba(13, 12, 29, 1) 0%, rgba(${clr}, 0.65) 15%, rgba(${clr}, 0.65) 80%, rgba(22, 27, 51, 1) 100%), url(${imageUrlOrig + fetchBasicData.backdrop_path}); background-size:cover;"`
+        } else {
+            return `style="opacity: 0; filter: alpha(opacity=0); position: absolute; background: linear-gradient(180deg, rgba(13, 12, 29, 1) 0%, rgba(${clr}, 0.65) 15%, rgba(${clr}, 0.65) 80%, rgba(22, 27, 51, 1) 100%), url(${imageUrlOrig + fetchBasicData.backdrop_path}); background-size:cover;"`
+        }
+    }
 }
+
+var total_pics_num = basicFilmId.length; // колличество изображений
+  var interval = 5000;    // задержка между изображениями
+  var time_out = 1;       // задержка смены изображений
+  var i = 0;
+  var timeout;
+  var opacity = 100;
+  function fade_to_next() {
+    opacity--;
+    var k = i + 1;
+    var image_now = 'image_' + i;
+    if (i == total_pics_num) k = 1;
+    var image_next = 'image_' + k;
+    document.getElementById(image_now).style.opacity = opacity/100;
+    document.getElementById(image_now).style.filter = 'alpha(opacity='+ opacity +')';
+    document.getElementById(image_next).style.opacity = (100-opacity)/100;
+    document.getElementById(image_next).style.filter = 'alpha(opacity='+ (100-opacity) +')';
+    timeout = setTimeout("fade_to_next()",time_out);
+    if (opacity==1) {
+      opacity = 100;
+      clearTimeout(timeout);
+    }
+  }
+  setInterval (
+    function() {
+      i++;
+      if (i > total_pics_num) i=1;
+      fade_to_next();
+    }, interval
+  );
+
+
 
 
 //ОТРИМАННЯ ДАННИХ ПРО ФІЛЬМ
@@ -337,8 +365,69 @@ form.addEventListener("submit", (e) => {
     }
   });
 
+inpt.addEventListener("focus",function(){
+    if (inpt.value != ""){
+        $(".pred_search").show(500)
+    }
+})
+
+inpt.addEventListener("input", function(){
+    $(".pred_search").show(500)
+    if (inpt.value != ""){
+    predSearch(inpt.value)}
+})
+
+inpt.addEventListener("blur", function(){
+    $(".pred_search").hide(500)
+})
+
+async function predSearch(data){
+    const new_searchURL = searchUrl + "&query=" + inpt.value;
+    const resp = await fetch(new_searchURL, {
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    const respData = await resp.json();
+    respData.results.splice(5);
+    predSearchShow(respData)
+}
+
+function predSearchShow(data){
+    const predSearchMovies = document.querySelector(".pred_search");
+    predSearchMovies.innerHTML="";
+    data.results.forEach(movie =>{
+        const predMovie = document.createElement("div");
+        predMovie.classList.add("pred_movie");
+        predMovie.innerHTML = `
+            ${movie.poster_path ? `<img src="${imageUrl}${movie.poster_path}" class="pred_mov-img"/>`: ''}
+            <div class="pred_mov-title">${movie_or_tv()}</div>
+        `
+        function movie_or_tv(){
+            if(movie.media_type === "tv"){
+                return `${movie.name}`
+            }
+            else{
+                return `${movie.title}`
+            }
+        };
+        predMovie.addEventListener("click", () => {
+            if(movie.media_type === "tv"){
+                openModal(movie.id, tvInfo)
+                inpt.value = "";
+            }
+            else{
+                openModal(movie.id, movieInfo)
+                inpt.value = "";
+            }
+        })
+        predSearchMovies.appendChild(predMovie)
+    })
+}
+
 function buttonOnClick(event){
     closeModal();
+    $(".pred_search").hide(500)
     document.querySelector(".main_text-popular").classList.remove("text-show");
     document.querySelector(".main_text-top").classList.remove("text-show");
     document.querySelector(".movies_popular").style.display = "none";
