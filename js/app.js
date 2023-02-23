@@ -21,6 +21,7 @@ document.querySelector(".main_text-popular").classList.add("text-show");
 document.querySelector(".main_text-top").classList.add("text-show");
 document.querySelector(".movies_searcheble").style.display = "none";
 fetchMainMovies(popularMovies, topRated, popularTv);
+
 //LOGIN
 
 let accRatingUrl
@@ -59,6 +60,29 @@ async function predLogin(){
     } )}
     async function log(){
     const auntentificate = document.querySelector(".auntentificate");
+
+    var cookies = document.cookie.split(";");
+    for(let l=0; l<loginData.length;l++){
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim().split("=");
+            if (cookie[0] == "user") {
+                if (cookie[1] == loginData[l].login) {
+                    auntentificate.classList.remove("show")
+                    document.querySelector(".btn_login").style.display = "none";
+                    accRatingUrl = loginData[l].url;
+                } else {
+                // Значення куки "cookieName" не дорівнює "expectedValue"
+                }
+                break;
+            }
+        }
+    
+    }
+    var btnLogin = document.querySelector(".btn_login");
+    btnLogin.addEventListener("click", ()=>{
+        log()
+    } )
+    async function log(){
     auntentificate.classList.add("show");
     auntentificate.innerHTML = `
         <div class="login_window">
@@ -107,6 +131,7 @@ async function predLogin(){
             auntentificate.classList.remove("show");
         }
       })
+}
 }
 
 //ГОЛОВНИЙ ФІЛЬМ
